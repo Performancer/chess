@@ -3,17 +3,18 @@
 #include <io.h>
 #include <iostream>
 #include <string>
+#include "input.h"
 
-#define WHITE 0
-#define BLACK 1
+#define WHITE 0x0
+#define BLACK 0x1
 
-#define KING	0
-#define QUEEN	1
-#define ROOK	2
-#define BISHOP	3
-#define KNIGHT	4
-#define PAWN	5
-#define EMPTY	6
+#define KING	0x0
+#define QUEEN	0x1
+#define ROOK	0x2
+#define BISHOP	0x3
+#define KNIGHT	0x4
+#define PAWN	0x5
+#define EMPTY	0x6
 
 struct tile
 {
@@ -22,6 +23,10 @@ struct tile
 };
 
 tile board_state[8][8];
+bool white_can_castle_king_side = true;
+bool white_can_castle_queen_side = true;
+bool black_can_castle_king_side = true;
+bool black_can_castle_queen_side = true;
 
 void initializeBoard()
 {
@@ -87,25 +92,59 @@ void draw()
 	std::wcout << " ";
 
 	for (int i = 0; i < 8; i++)
-		std::wcout << " " << (char)(65 + i) << " ";
+		std::wcout << " " << (char)('A' + i) << " ";
 
 	std::wcout << std::endl << std::endl;
 	SetConsoleTextAttribute(out, BLACK_CONSOLE);
 }
 
-void getMove()
+void movePiece(int from_x, int from_y, int to_x, int to_y)
 {
-	std::wcout << "Enter your move: ";
+	char type = board_state[from_x][from_y].type;
+	bool color = board_state[from_x][from_y].color;
 
-	std::wstring input;
-	std::wcin >> input;
+	board_state[from_x][from_y].type = EMPTY;
+
+	board_state[to_x][to_y].type = type;
+	board_state[to_x][to_y].color = color;
+}
+
+void executeMove(move* move, bool color)
+{
+	if (move->type == OFFICER_MOVE)
+	{
+		movePiece(move->from_x, move->from_y, move->to_x, move->to_y);
+	}
+	else if (move->type == CASTLING_QUEEN_SIDE)
+	{
+		int y = color == WHITE ? 0 : 7;
+		movePiece(4, y, 2, y);
+		movePiece(0, y, 3, y);
+	}
+	else if (move->type == CASTLING_KING_SIDE)
+	{
+		int y = color == WHITE ? 0 : 7;
+		movePiece(4, y, 6, y);
+		movePiece(7, y, 5, y);
+	}
+	else if (move->type == PAWN_MOVE)
+	{
+		//TODO: find out which pawn is moving
+	}
+
+	delete move;
 }
 
 int main()
 {
 	initializeBoard();
 
-	draw();
+	while(true)
+	{
+		draw();
+		executeMove(getMove(), WHITE);
+		system("cls");
+	}
 
 	std::cin.get();
 }
