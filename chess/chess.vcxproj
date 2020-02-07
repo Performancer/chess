@@ -115,10 +115,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="generator.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="output.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="output.h" />
+    <ClInclude Include="state.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="move.h" />
   </ItemGroup>
