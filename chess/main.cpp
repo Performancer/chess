@@ -2,11 +2,6 @@
 #include "input.h"
 #include "output.h"
 
-bool white_can_castle_king_side = true;
-bool white_can_castle_queen_side = true;
-bool black_can_castle_king_side = true;
-bool black_can_castle_queen_side = true;
-
 void movePiece(struct State* state, int from_x, int from_y, int to_x, int to_y)
 {
 	char piece = state->tiles[from_x][from_y];

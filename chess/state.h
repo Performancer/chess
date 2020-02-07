@@ -13,6 +13,11 @@ struct State
 {
 	char tiles[8][8];
 
+	bool white_can_castle_king_side = true;
+	bool white_can_castle_queen_side = true;
+	bool black_can_castle_king_side = true;
+	bool black_can_castle_queen_side = true;
+
 	void initialize()
 	{
 		for (int x = 0; x < 8; x++)
@@ -44,3 +49,6 @@ struct State
 			tiles[x][6] = PAWN | BLACK;
 	}
 };
+char getType(char tile);
+bool getColor(char tile);
+bool isAlly(char a, char b);
