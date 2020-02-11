@@ -11,7 +11,7 @@
 
 void draw(struct State* state)
 {
-	system("cls");
+	//system("cls");
 
 	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
 	_setmode(_fileno(stdout), _O_U16TEXT);

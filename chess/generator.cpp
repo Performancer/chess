@@ -1,12 +1,11 @@
-#include <list>
-#include "state.h"
-#include "vector.h"
+#include "generator.h"
+#include <iostream>
 
 void swap(int* a, int* b)
 {
-	int* temp = a;
-	a = b;
-	b = temp;
+	int temp = *a;
+	*a = *b;
+	*b = temp;
 }
 
 bool outsideBoard(int x, int y)
@@ -105,11 +104,13 @@ std::list<struct Vector*> getMoves(struct State* state, struct Vector* from, cha
 			int x = ((i / 2) % 2 == 0) ? 2 : -2;
 			int y = (i % 2 == 0) ? 1 : -1;
 
-			if (x >= 4)
+			if (i >= 4)
 				swap(&x, &y);
 
 			x += from->x;
 			y += from->y;
+
+			std::wcout << x << " " << y << std::endl;
 
 			if (outsideBoard(x, y))
 				continue;

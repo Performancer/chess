@@ -36,14 +36,14 @@ struct State
 		for (int x = 0; x < 8; x++)
 			tiles[x][1] = PAWN;
 
-		tiles[0][7] = ROOK | BLACK;
-		tiles[1][7] = KNIGHT | BLACK;
-		tiles[2][7] = BISHOP | BLACK;
-		tiles[3][7] = QUEEN | BLACK;
-		tiles[4][7] = KING | BLACK;
-		tiles[5][7] = BISHOP | BLACK;
-		tiles[6][7] = KNIGHT | BLACK;
-		tiles[7][7] = ROOK | BLACK;
+		tiles[0][7] = ROOK		| BLACK;
+		tiles[1][7] = KNIGHT	| BLACK;
+		tiles[2][7] = BISHOP	| BLACK;
+		tiles[3][7] = QUEEN		| BLACK;
+		tiles[4][7] = KING		| BLACK;
+		tiles[5][7] = BISHOP	| BLACK;
+		tiles[6][7] = KNIGHT	| BLACK;
+		tiles[7][7] = ROOK		| BLACK;
 
 		for (int x = 0; x < 8; x++)
 			tiles[x][6] = PAWN | BLACK;

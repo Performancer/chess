@@ -122,6 +122,7 @@
     <ClCompile Include="state.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="generator.h" />
     <ClInclude Include="output.h" />
     <ClInclude Include="state.h" />
     <ClInclude Include="input.h" />
