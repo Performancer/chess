@@ -52,4 +52,6 @@ void draw(struct State* state)
 
 	std::wcout << std::endl << std::endl;
 	SetConsoleTextAttribute(out, BLACK_CONSOLE);
+
+	std::wcout << state->white_can_castle_king_side << state->white_can_castle_queen_side << state->black_can_castle_king_side << state->black_can_castle_queen_side << std::endl;
 }

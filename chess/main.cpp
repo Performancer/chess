@@ -8,13 +8,18 @@ int main()
 	State state;
 	state.initialize();
 
+	int turn = 0;
+
 	while(true)
 	{
 		draw(&state);
 
-		Move move = getMove();
+		Move move = getMove( turn % 2 != 0);
 
-		if (move.type != NORMAL_MOVE || isLegalMove(&state, move))
-			executeMove(&state, move, true);
+		if (isLegalMove(&state, move))
+		{
+			executeMove(&state, move);
+			turn++;
+		}
 	}
 }

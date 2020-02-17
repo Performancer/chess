@@ -1,4 +1,4 @@
 #pragma once
 #include "move.h"
 
-Move getMove();
+Move getMove(bool is_black);

@@ -27,9 +27,9 @@ bool parseCoordinates(int* arr, char x, char y)
 	return true;
 }
 
-Move getMove()
+Move getMove(bool is_black)
 {
-	std::wcout << "Enter your move: ";
+	std::wcout << "Enter " << (is_black ? "black" : "white" ) << " move: ";
 	std::wstring input;
 	std::wcin >> input;
 
@@ -40,14 +40,20 @@ Move getMove()
 		{
 			int to[2];
 			if (parseCoordinates(to, input[4], input[5]))
-				return { NORMAL_MOVE, from[0], from[1], to[0], to[1] };
+				return { from[0], from[1], to[0], to[1] };
 		}
 	}
 	else if (input.size() == 5 && input == L"O-O-O")
-		return {CASTLING_QUEEN_SIDE};
+	{
+		int y = is_black ? 7 : 0;
+		return { 4, y, 2, y };
+	}
 	else if (input.size() == 3 && input == L"O-O")
-		return {CASTLING_KING_SIDE};
+	{
+		int y = is_black ? 7 : 0;
+		return { 4, y, 6, y };
+	}
 
 	std::wcout << "Invalid move. Try again." << std::endl;
-	return getMove();
+	return getMove(is_black);
 }

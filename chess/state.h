@@ -1,4 +1,5 @@
 #pragma once
+#include "vector.h"
 
 #define KING	0x0
 #define QUEEN	0x1
@@ -17,6 +18,9 @@ struct State
 	bool white_can_castle_queen_side = true;
 	bool black_can_castle_king_side = true;
 	bool black_can_castle_queen_side = true;
+
+	//records if a pawn makes a move of two squares from its starting square
+	Vector en_passant = { -1, -1 };
 
 	void initialize()
 	{

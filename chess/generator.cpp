@@ -20,20 +20,37 @@ std::list<struct Vector*> getMoves(struct State* state, struct Vector from, char
 	if(type == EMPTY)
 		type = getType(piece);
 
+	bool color = getColor(piece);
+
 	std::list<struct Vector*> moves;
 	std::list<struct Vector*>  bonus;
 
 	switch (type)
 	{
 	case KING:
-
-		//TODO: castling
 		moves = getMoves(state, from, BISHOP, 2);
 		bonus = getMoves(state, from, ROOK, 2);
 
 		for(struct Vector* vector : bonus)
 			moves.push_back(vector);
 
+		if (color ? state->black_can_castle_king_side : state->white_can_castle_king_side)
+		{
+			Vector* vector = new Vector;
+			vector->x = 6;
+			vector->y = color ? 7 : 0;
+			moves.push_back(vector);
+		}
+		
+		if (color ? state->black_can_castle_queen_side : state->white_can_castle_queen_side)
+		{
+			std::wcout << "wtf" << std::endl;
+			
+			Vector* vector = new Vector;
+			vector->x = 2;
+			vector->y = color ? 7 : 0;
+			moves.push_back(vector);
+		}
 		break;
 	case QUEEN:
 		moves = getMoves(state, from, BISHOP, 8);
@@ -172,14 +189,17 @@ std::list<struct Vector*> getMoves(struct State* state, struct Vector from, char
 			}
 			else
 			{
-				if (!isAlly(piece, tile))
+				if (tile != EMPTY)
 				{
-					//eat
-					Vector *move = new Vector;
-					*move = { x, y };
-					moves.push_back(move);
+					if (!isAlly(piece, tile))
+					{
+						//eat
+						Vector *move = new Vector;
+						*move = { x, y };
+						moves.push_back(move);
+					}
 				}
-				else if (getType(state->tiles[x][from.y]) == ROOK && !isAlly(piece, tile))
+				else if (getType(state->tiles[x][from.y]) == PAWN && !isAlly(piece, state->tiles[x][from.y]))
 				{
 					//en passant
 					Vector *move = new Vector;
@@ -205,7 +225,6 @@ bool isCheck(struct State* state, bool color)
 		for (int y = 0; y < 8; y++)
 		{
 			char tile = state->tiles[x][y];
-
 			if (getType(tile) == KING && getColor(tile) == color)
 				king_location = { x, y };
 		}
