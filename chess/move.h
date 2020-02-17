@@ -1,16 +1,13 @@
 #pragma once
+#include "vector.h"
 
-#define INVALID_MOVE 0
-#define OFFICER_MOVE 1
-#define PAWN_MOVE 2
-#define CASTLING_QUEEN_SIDE 3
-#define CASTLING_KING_SIDE 4
+#define NORMAL_MOVE 0x0
+#define CASTLING_QUEEN_SIDE 0x1
+#define CASTLING_KING_SIDE 0x2
 
-struct move
+struct Move
 {
-	char type = INVALID_MOVE;
-	int from_x = 0;
-	int from_y = 0;
-	int to_x = 0;
-	int to_y = 0;
+	char type;
+	struct Vector from;
+	struct Vector to;
 };

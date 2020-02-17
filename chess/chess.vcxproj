@@ -118,11 +118,13 @@
     <ClCompile Include="generator.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="movement.cpp" />
     <ClCompile Include="output.cpp" />
     <ClCompile Include="state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="generator.h" />
+    <ClInclude Include="movement.h" />
     <ClInclude Include="output.h" />
     <ClInclude Include="state.h" />
     <ClInclude Include="input.h" />

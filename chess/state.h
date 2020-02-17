@@ -48,6 +48,13 @@ struct State
 		for (int x = 0; x < 8; x++)
 			tiles[x][6] = PAWN | BLACK;
 	}
+
+	void copyState(struct State* copyTo)
+	{
+		for (int x = 0; x < 8; x++)
+			for (int y = 0; y < 8; y++)
+				copyTo->tiles[x][y] = tiles[x][y];
+	}
 };
 char getType(char tile);
 bool getColor(char tile);

@@ -3,11 +3,11 @@
 #include <io.h>
 #include <iostream>
 #include <string>
-#include "input.h"
+#include "move.h"
 
 bool isValidOfficer(char c)
 {
-	if (c == 'K' || c == 'Q' || c == 'R' || c == 'B' || c == 'N')
+	if (c == 'K' || c == 'Q' || c == 'R' || c == 'B' || c == 'N' || c == 'P')
 		return true;
 
 	return false;
@@ -27,13 +27,11 @@ bool parseCoordinates(int* arr, char x, char y)
 	return true;
 }
 
-move* getMove()
+Move getMove()
 {
 	std::wcout << "Enter your move: ";
 	std::wstring input;
 	std::wcin >> input;
-
-	move* m = new move;
 
 	if (input.size() == 6 && isValidOfficer(input[0]))
 	{
@@ -42,25 +40,14 @@ move* getMove()
 		{
 			int to[2];
 			if (parseCoordinates(to, input[4], input[5]))
-				*m = { OFFICER_MOVE, from[0], from[1], to[0], to[1] };
+				return { NORMAL_MOVE, from[0], from[1], to[0], to[1] };
 		}
 	}
 	else if (input.size() == 5 && input == L"O-O-O")
-		*m = {CASTLING_QUEEN_SIDE};
+		return {CASTLING_QUEEN_SIDE};
 	else if (input.size() == 3 && input == L"O-O")
-		*m = {CASTLING_KING_SIDE};
-	else if (input.size() == 2)
-	{
-		int to[2];
-		if (parseCoordinates(to, input[0], input[1]))
-			*m = { PAWN_MOVE, 0, 0, to[0], to[1] };
-	}
+		return {CASTLING_KING_SIDE};
 
-	if (m->type == INVALID_MOVE)
-	{
-		std::wcout << "Invalid move. Try again." << std::endl;
-		return getMove();
-	}
-
-	return m;
+	std::wcout << "Invalid move. Try again." << std::endl;
+	return getMove();
 }
