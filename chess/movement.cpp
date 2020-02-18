@@ -115,10 +115,67 @@ bool isLegalMove(struct State* state, Move move)
 
 			if (isCheck(&temp, color))
 			{
-				std::wcout << "This would be a check!" << std::endl;
+				std::wcout << "This would result in a check!" << std::endl;
 				return false;
 			}
-					
+
+			if (move.isCastling(state))
+			{
+				//1. The king and the chosen rook are on the player's first rank.
+				//2. Neither the king nor the chosen rook has previously moved.
+				//3. There are no pieces between the king and the chosen rook.
+				//4. The king is not currently in check.
+				//5. The king does not pass through a square that is attacked by an enemy piece.
+				//6. The king does not end up in check. (True of any legal move.)
+
+				if (isCheck(state, color))
+				{
+					std::wcout << "Cannot castle: the king is currently in check!" << std::endl;
+					return false;
+				}
+				else if (move.to.x == 2 )
+				{
+					if (state->tiles[1][move.from.y] != EMPTY)
+					{
+						std::wcout << "Cannot castle: there is another piece in the way!" << std::endl;
+						return false;
+					}
+					else if (state->tiles[2][move.from.y] != EMPTY)
+					{
+						std::wcout << "Cannot castle: there is another piece in the way!" << std::endl;
+						return false;
+					}
+					else if (state->tiles[3][move.from.y] != EMPTY)
+					{
+						std::wcout << "Cannot castle: there is another piece in the way!" << std::endl;
+						return false;
+					}
+					else if (isThreatened(state, { 3, move.from.y }, color))
+					{
+						std::wcout << "Cannot castle: the square between is threatened!" << std::endl;
+						return false;
+					}
+				}
+				else if (move.to.x == 6 )
+				{
+					if (state->tiles[5][move.from.y] != EMPTY)
+					{
+						std::wcout << "Cannot castle: there is another piece in the way!" << std::endl;
+						return false;
+					}
+					else if (state->tiles[6][move.from.y] != EMPTY)
+					{
+						std::wcout << "Cannot castle: there is another piece in the way!" << std::endl;
+						return false;
+					}
+					else if (isThreatened(state, { 5, move.from.y }, color))
+					{
+						std::wcout << "Cannot castle: the square between is threatened!" << std::endl;
+						return false;
+					}
+				}
+			}
+
 			return true;
 		}
 

@@ -44,8 +44,6 @@ std::list<struct Vector*> getMoves(struct State* state, struct Vector from, char
 		
 		if (color ? state->black_can_castle_queen_side : state->white_can_castle_queen_side)
 		{
-			std::wcout << "wtf" << std::endl;
-			
 			Vector* vector = new Vector;
 			vector->x = 2;
 			vector->y = color ? 7 : 0;
@@ -215,6 +213,36 @@ std::list<struct Vector*> getMoves(struct State* state, struct Vector from, char
 	return moves;
 }
 
+bool isThreatened(struct State* state, Vector square, bool color)
+{
+	for (int x = 0; x < 8; x++)
+	{
+		for (int y = 0; y < 8; y++)
+		{
+			char tile = state->tiles[x][y];
+
+			if (tile != EMPTY && getColor(tile) != color)
+			{
+				Vector from = { x, y };
+				std::list<Vector*> moves = getMoves(state, from, EMPTY, 8);
+
+				for (Vector* move : moves)
+				{
+					if (move->x == square.x && move->y == square.y)
+					{
+						std::wcout << "Square " << "(" << move->x << ", " << move->y << ")" << " is threatened by (" << x << ", " << y << ")." << std::endl;
+						return true;
+					}
+				}
+
+				moves.clear();
+			}
+		}
+	}
+
+	return false;
+}
+
 bool isCheck(struct State* state, bool color)
 {
 	Vector king_location;
@@ -230,32 +258,5 @@ bool isCheck(struct State* state, bool color)
 		}
 	}
 
-	std::wcout << "King's location is at (" << king_location.x << ", " << king_location.y << ")" << std::endl;
-
-	for (int x = 0; x < 8; x++)
-	{
-		for (int y = 0; y < 8; y++)
-		{
-			char tile = state->tiles[x][y];
-
-			if (getColor(tile) != color && tile != EMPTY)
-			{
-				Vector from = { x, y };
-				std::list<Vector*> moves = getMoves(state, from, EMPTY, 8);
-
-				for (Vector* move : moves)
-				{
-					if (move->x == king_location.x && move->y == king_location.y)
-					{
-						std::wcout << "King would be eaten by (" << x << ", " << y << ")" << "at (" << move->x << ", " << move->y << ")" << std::endl;
-						return true;
-					}
-				}
-
-				moves.clear();
-			}
-		}
-	}
-
-	return false;
+	return isThreatened(state, king_location, color);
 }

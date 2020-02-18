@@ -8,7 +8,7 @@
 #define KNIGHT	0x4
 #define PAWN	0x5
 #define EMPTY	0x6
-#define BLACK	0x8
+#define BLACK	0x8 //It is fast to compare values stored as a bitmask.
 
 struct State
 {
@@ -60,6 +60,7 @@ struct State
 				copyTo->tiles[x][y] = tiles[x][y];
 	}
 };
+
 char getType(char tile);
 bool getColor(char tile);
 bool isAlly(char a, char b);
