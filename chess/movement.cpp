@@ -100,6 +100,20 @@ void executeMove(struct State* state, Move move)
 	checkCastling(state, move);
 
 	movePiece(state, move.from, move.to);
+
+	char piece = state->tiles[move.from.x][move.from.y];
+	char type = getType(piece);
+	bool color = getColor(piece); // white = 0, black = 1
+
+	if (type == PAWN && move.to.y == (color ? 0 : 7))
+	{
+		//TODO: choosing promotion
+
+		if(color)
+			state->tiles[move.to.x][move.to.y] = QUEEN | BLACK;
+		else
+			state->tiles[move.to.x][move.to.y] = QUEEN;
+	}
 }
 
 bool isLegalMove(struct State* state, Move move)
