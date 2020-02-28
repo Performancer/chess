@@ -3,7 +3,7 @@
 #include <io.h>
 #include <iostream>
 #include <string>
-#include "move.h"
+#include "input.h"
 
 bool isValidOfficer(char c)
 {

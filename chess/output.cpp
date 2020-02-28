@@ -3,15 +3,16 @@
 #include <io.h>
 #include <iostream>
 #include "state.h"
+#include "move.h"
 
 #define BLACK_CONSOLE		0x0F
 #define DARK_GREY_CONSOLE	0x80
 #define LIGHT_GREY_CONSOLE	0x70
 #define WHITE_CONSOLE		0xF0
 
-void draw(struct State* state)
+void draw(struct State* state, struct Move last_move)
 {
-	//system("cls");
+	system("cls");
 
 	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
 	_setmode(_fileno(stdout), _O_U16TEXT);
@@ -52,6 +53,4 @@ void draw(struct State* state)
 
 	std::wcout << std::endl << std::endl;
 	SetConsoleTextAttribute(out, BLACK_CONSOLE);
-
-	std::wcout << state->white_can_castle_king_side << state->white_can_castle_queen_side << state->black_can_castle_king_side << state->black_can_castle_queen_side << std::endl;
 }

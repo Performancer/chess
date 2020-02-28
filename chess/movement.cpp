@@ -118,8 +118,8 @@ void executeMove(struct State* state, Move move)
 
 bool isLegalMove(struct State* state, Move move)
 {
-	for (Vector* vector : getMoves(state, move.from, EMPTY, 8))
-		if (*vector == move.to)
+	for (struct Vector vector : getMoves(state, move.from))
+		if (vector == move.to)
 		{
 			bool color = getColor(state->tiles[move.from.x][move.from.y]); //white = 0, black = 1
 
