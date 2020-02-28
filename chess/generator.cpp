@@ -125,7 +125,10 @@ std::list<struct Vector> getKingMoves(struct State* state, struct Vector from)
 
 bool pawnHasMoved(int y, bool is_black)
 {
-	return is_black && y == 6 && !is_black && y == 1;
+	if (is_black)
+		return y != 6;
+
+	return y != 1;
 }
 
 std::list<struct Vector> getPawnMoves(struct State* state, struct Vector from)
@@ -147,8 +150,8 @@ std::list<struct Vector> getPawnMoves(struct State* state, struct Vector from)
 			{
 				moves.push_back({ from.x, y }); //advance
 
-				if (!pawnHasMoved(from.y, is_black) && state->tiles[from.x][y + 1] == EMPTY)
-					moves.push_back({ from.x, y + 1 }); //move two squares ahead
+				if (!pawnHasMoved(from.y, is_black) && state->tiles[from.x][y + (is_black ? -1 : 1)] == EMPTY)
+					moves.push_back({ from.x, y + (is_black ? -1 : 1) }); //move two squares ahead
 			}
 		}
 		else

@@ -195,5 +195,10 @@ bool isLegalMove(struct State* state, Move move)
 		}
 
 	std::wcout << "It is not a legal move." << std::endl;
+	std::wcout << "Legal moves from (" << move.from.x << "," << move.from.y << ") are:" << std::endl;
+	
+	for (struct Vector vector : getMoves(state, move.from))
+		std::wcout << " to: " << vector.x << ","<< vector.y << std::endl;
+
 	return false;
 }

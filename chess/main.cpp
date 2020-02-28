@@ -21,7 +21,7 @@ int main()
 
 		bool color = turn % 2 != 0; //white = 0, black = 1
 
-		if (player_color)
+		if (player_color == color)
 		{
 			std::vector<struct Move> moves;
 			// Get all the possible moves that can be made
@@ -32,6 +32,12 @@ int main()
 							moves.push_back({ x, y, vector.x, vector.y });
 
 			//TODO: alphabeta
+
+			if (moves.size() == 0)
+			{
+				printf("The game has ended");
+				break;
+			}
 
 			Move move = moves[std::rand() % moves.size()];
 			executeMove(&state, move, true);
@@ -50,4 +56,6 @@ int main()
 			}
 		}
 	}
+
+	getchar();
 }
