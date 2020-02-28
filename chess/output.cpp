@@ -5,10 +5,11 @@
 #include "state.h"
 #include "move.h"
 
-#define BLACK_CONSOLE		0x0F
-#define DARK_GREY_CONSOLE	0x80
-#define LIGHT_GREY_CONSOLE	0x70
-#define WHITE_CONSOLE		0xF0
+#define WHITE_TEXT			0x0F
+#define FRAME_COLOR			0x80
+#define MOVE_COLOR			0x60
+#define BLACK_SQUARE		0x80
+#define WHITE_SQUARE		0x70
 
 void draw(struct State* state, struct Move last_move)
 {
@@ -17,29 +18,33 @@ void draw(struct State* state, struct Move last_move)
 	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
 	_setmode(_fileno(stdout), _O_U16TEXT);
 
-	for (int y = 7; y >= 0; y--)
+	for (int y = BOARD_SIZE - 1; y >= 0; y--)
 	{
-		SetConsoleTextAttribute(out, DARK_GREY_CONSOLE);
-		std::wcout << y + 1;
+		SetConsoleTextAttribute(out, FRAME_COLOR);
+		std::wcout << y + 1 << " ";
 
-		for (int x = 0; x < 8; x++)
+		for (int x = 0; x < BOARD_SIZE; x++)
 		{
-			if(x == last_move.from.x && y == last_move.from.y || x == last_move.to.x && y == last_move.to.y)
-				SetConsoleTextAttribute(out, DARK_GREY_CONSOLE);
-			else if (y % 2 != 0 && x % 2 == 0 || y % 2 == 0 && x % 2 != 0)
-				SetConsoleTextAttribute(out, LIGHT_GREY_CONSOLE);
-			else
-				SetConsoleTextAttribute(out, WHITE_CONSOLE);
-
 			char tile = state->tiles[x][y];
+			char type = getType(tile);
+			bool black = getColor(tile);
 
-			if (tile != EMPTY)
-			{
-				char piece = (tile | BLACK) ^ BLACK;
-				bool black = (tile & BLACK) == BLACK;
+			int color;
 
-				std::wcout << " " << static_cast<wchar_t>(9812 + piece + black * 6) << " ";
-			}
+			if (x == last_move.from.x && y == last_move.from.y || x == last_move.to.x && y == last_move.to.y)
+				color = MOVE_COLOR;
+			else if (y % 2 != 0 && x % 2 == 0 || y % 2 == 0 && x % 2 != 0)
+				color = BLACK_SQUARE;
+			else
+				color = WHITE_SQUARE;
+
+			if (!black)
+				color |= WHITE_TEXT;
+
+			SetConsoleTextAttribute(out, color);
+
+			if (type != EMPTY)
+				std::wcout << " " << static_cast<wchar_t>(9818 + type) << " ";
 			else
 				std::wcout << "   ";
 		}
@@ -47,12 +52,12 @@ void draw(struct State* state, struct Move last_move)
 		std::wcout << std::endl;
 	}
 
-	SetConsoleTextAttribute(out, DARK_GREY_CONSOLE);
-	std::wcout << " ";
+	SetConsoleTextAttribute(out, FRAME_COLOR);
+	std::wcout << "  ";
 
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < BOARD_SIZE; i++)
 		std::wcout << " " << (char)('A' + i) << " ";
 
 	std::wcout << std::endl << std::endl;
-	SetConsoleTextAttribute(out, BLACK_CONSOLE);
+	SetConsoleTextAttribute(out, WHITE_TEXT);
 }

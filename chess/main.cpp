@@ -21,30 +21,7 @@ int main()
 
 		bool color = turn % 2 != 0; //white = 0, black = 1
 
-		if (player_color == color)
-		{
-			std::vector<struct Move> moves;
-			// Get all the possible moves that can be made
-			for (int x = 0; x < BOARD_SIZE; x++)
-				for (int y = 0; y < BOARD_SIZE; y++)
-					if (getColor(state.tiles[x][y]) == color) // AI can only move the color assigned
-						for (struct Vector vector : getMoves(&state, { x, y }))
-							moves.push_back({ x, y, vector.x, vector.y });
-
-			//TODO: alphabeta
-
-			if (moves.size() == 0)
-			{
-				printf("The game has ended");
-				break;
-			}
-
-			Move move = moves[std::rand() % moves.size()];
-			executeMove(&state, move, true);
-			last_move = move;
-			turn++;
-		}
-		else
+		if (color == player_color)
 		{
 			Move move = getMove(color);
 
@@ -55,7 +32,29 @@ int main()
 				turn++;
 			}
 		}
+		else
+		{
+			std::vector<struct Move> moves;
+			//get all the possible moves that can be made
+			for (int x = 0; x < BOARD_SIZE; x++)
+				for (int y = 0; y < BOARD_SIZE; y++)
+					if (getColor(state.tiles[x][y]) == color) //AI can only move the color assigned
+						for (struct Vector vector : getMoves(&state, { x, y }))
+							moves.push_back({ x, y, vector.x, vector.y });
+
+			//if there is no more possible moves, the game has definitely ended
+			if (moves.size() == 0)
+				break;
+
+			//TODO: alphabeta
+
+			Move move = moves[std::rand() % moves.size()];
+			executeMove(&state, move, true);
+			last_move = move;
+			turn++;
+		}
 	}
 
+	wprintf(L"The game has ended");
 	getchar();
 }
