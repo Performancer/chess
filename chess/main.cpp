@@ -55,6 +55,6 @@ int main()
 		}
 	}
 
-	wprintf(L"The game has ended");
+	wprintf(L"The game has ended.");
 	getchar();
 }

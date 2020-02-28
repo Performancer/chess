@@ -8,7 +8,7 @@
 #define KNIGHT	0x4
 #define PAWN	0x5
 #define EMPTY	0x6
-#define BLACK	0x8 // It is faster to compare values stored as a bitmask
+#define BLACK	0x8 //it is faster to compare values stored as a bitmask
 
 #define BOARD_SIZE 8
 
@@ -21,7 +21,7 @@ struct State
 	bool black_can_castle_king_side = true;
 	bool black_can_castle_queen_side = true;
 
-	// Records if a pawn makes a move of two squares from its starting square
+	//records if a pawn makes a move of two squares from its starting square
 	Vector en_passant = { -1, -1 };
 
 	void initialize();
