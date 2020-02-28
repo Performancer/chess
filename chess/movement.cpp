@@ -92,9 +92,10 @@ void checkCastling(struct State* state, Move move)
 	}
 }
 
-void executeMove(struct State* state, Move move)
+void executeMove(struct State* state, Move move, bool inform = false)
 {
-	std::wcout << "moving (" << move.from.x << ", " << move.from.y  <<  ") to (" << move.to.x << ", " << move.to.y << ")" << std::endl;
+	if(inform)
+		std::wcout << "moving (" << move.from.x << ", " << move.from.y  <<  ") to (" << move.to.x << ", " << move.to.y << ")" << std::endl;
 
 	checkEnPasse(state, move);
 	checkCastling(state, move);

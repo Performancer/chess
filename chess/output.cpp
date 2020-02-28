@@ -24,7 +24,9 @@ void draw(struct State* state, struct Move last_move)
 
 		for (int x = 0; x < 8; x++)
 		{
-			if (y % 2 != 0 && x % 2 == 0 || y % 2 == 0 && x % 2 != 0)
+			if(x == last_move.from.x && y == last_move.from.y || x == last_move.to.x && y == last_move.to.y)
+				SetConsoleTextAttribute(out, DARK_GREY_CONSOLE);
+			else if (y % 2 != 0 && x % 2 == 0 || y % 2 == 0 && x % 2 != 0)
 				SetConsoleTextAttribute(out, LIGHT_GREY_CONSOLE);
 			else
 				SetConsoleTextAttribute(out, WHITE_CONSOLE);
