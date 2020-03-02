@@ -1,4 +1,7 @@
 #include "state.h"
+#include "generator.h"
+#include "move.h"
+#include <math.h>
 
 char getType(char tile)
 {
@@ -53,10 +56,10 @@ void State::copyState(struct State* copyTo)
 			copyTo->tiles[x][y] = tiles[x][y];
 }
 
-double State::evaluate()
+int State::evaluate()
 {
-	double white = 0;
-	double black = 0;
+	int white = 0;
+	int black = 0;
 
 	for (int x = 0; x < BOARD_SIZE; x++)
 	{
@@ -74,10 +77,49 @@ double State::evaluate()
 
 			switch (type)
 			{
-				case QUEEN:		value = 9;		break;
-				case ROOK:		value = 5;		break;
-				case BISHOP:	value = 3.25;	break;
-				case KNIGHT:	value = 3;		break;
+				case KING: 
+				{
+					if (getType(tiles[4][color ? 7 : 0]))
+						value += 2;
+					else if (getType(tiles[2][color ? 7 : 0]))
+						value += 10;
+					else if (getType(tiles[6][color ? 7 : 0]))
+						value += 10;
+					break;
+				}
+				case QUEEN: 
+				{
+					value += 9;
+					value += (8 - (abs(x - 4) + abs(x - 4))) / 2;
+					break;
+				}
+				case ROOK:
+				{
+					value = 5;
+
+					if ((!color && y != 0) || (color && y != 7))
+						value += 1;
+
+					break;
+				}
+				case BISHOP:
+				{
+					value = 3.25;
+
+					if ((!color && y != 0) || (color && y != 7))
+						value += 1;
+
+					break; 
+				}
+				case KNIGHT: 
+				{
+					value = 3;
+
+					if (x > 2 && x < 6)
+						value += 1;
+
+					break; 
+				}
 				case PAWN:		value = 1;		break;
 			}
 
@@ -88,8 +130,27 @@ double State::evaluate()
 		}
 	}
 
-	if (white == 0)
-		white = 0.1;
+	return white - black;
+}
 
-	return black / white;
+struct Vector State::getKing(bool color)
+{
+	struct Vector king = { -1, -1 };
+
+	//find the king
+	for (int x = 0; x < BOARD_SIZE; x++)
+		for (int y = 0; y < BOARD_SIZE; y++)
+		{
+			char tile = tiles[x][y];
+			if (getType(tile) == KING && getColor(tile) == color)
+				king = { x, y };
+		}
+
+	return king;
+}
+
+bool State::isCheckmate(bool color)
+{
+	struct Vector king = getKing(color);
+	return king.isEqual(-1, -1);
 }

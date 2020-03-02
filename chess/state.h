@@ -22,12 +22,14 @@ struct State
 	bool black_can_castle_queen_side = true;
 
 	//records if a pawn makes a move of two squares from its starting square
-	Vector en_passant = { -1, -1 };
+	struct Vector en_passant = { -1, -1 };
 
 	void initialize();
 	void copyState(struct State* copyTo);
 
-	double evaluate();
+	int evaluate();
+	struct Vector getKing(bool color);
+	bool isCheckmate(bool color);
 };
 
 char getType(char tile);

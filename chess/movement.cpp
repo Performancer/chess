@@ -14,7 +14,7 @@ void movePiece(struct State* state, struct Vector from, struct Vector to)
 	state->tiles[to.x][to.y] = piece;
 }
 
-void checkEnPasse(struct State* state, Move move)
+void checkEnPasse(struct State* state, Move move, bool inform)
 {
 	state->en_passant = { -1, -1 };
 
@@ -28,12 +28,16 @@ void checkEnPasse(struct State* state, Move move)
 		}
 		else if (state->tiles[move.to.x][move.to.y] == EMPTY)
 		{
-			std::wcout << "It seems we are executing En Passant" << std::endl;
+			if(inform)
+				std::wcout << "It seems we are executing En Passant" << std::endl;
+
 			char passer = state->tiles[move.to.x][move.from.y];
 
 			if (getType(passer) == PAWN && !isAlly(piece, passer))
 			{
-				std::wcout << "En Passant executed" << std::endl;
+				if (inform)
+					std::wcout << "En Passant executed" << std::endl;
+
 				state->tiles[move.to.x][move.from.y] = EMPTY;
 			}
 		}
@@ -97,7 +101,7 @@ void executeMove(struct State* state, Move move, bool inform = false)
 	if(inform)
 		std::wcout << "Moving (" << move.from.x << ", " << move.from.y  <<  ") to (" << move.to.x << ", " << move.to.y << ")" << std::endl;
 
-	checkEnPasse(state, move);
+	checkEnPasse(state, move, inform);
 	checkCastling(state, move);
 
 	movePiece(state, move.from, move.to);

@@ -13,7 +13,7 @@
 
 void draw(struct State* state, struct Move last_move)
 {
-	system("cls");
+	//system("cls");
 
 	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
 	_setmode(_fileno(stdout), _O_U16TEXT);

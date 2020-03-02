@@ -14,18 +14,6 @@ bool outsideBoard(int x, int y)
 	return x < 0 || y < 0 || x >= BOARD_SIZE || y >= BOARD_SIZE;
 }
 
-bool isValidTile(struct State* state, struct Vector from, struct Vector to)
-{
-	if (!outsideBoard(to.x, to.y))
-	{
-		char tile = state->tiles[to.x][to.y];
-		if (tile == EMPTY || !isAlly(state->tiles[from.x][from.y], tile))
-			return true;
-	}
-
-	return false;
-}
-
 std::list<struct Vector> getKnightMoves(struct State* state, struct Vector from)
 {
 	std::list<struct Vector> moves;
@@ -40,7 +28,11 @@ std::list<struct Vector> getKnightMoves(struct State* state, struct Vector from)
 
 		struct Vector to = { from.x + x, from.y + y };
 
-		if (isValidTile(state, from, to))
+		if (outsideBoard(to.x, to.y))
+			continue;
+
+		char tile = state->tiles[to.x][to.y];
+		if (tile == EMPTY || !isAlly(state->tiles[from.x][from.y], tile))
 			moves.push_back(to);
 	}
 
@@ -58,10 +50,20 @@ std::list<struct Vector> getBishopMoves(struct State* state, struct Vector from,
 			int y = direction < 2 ? distance : -distance;
 			Vector to = { from.x + x , from.y + y };
 
-			if (!isValidTile(state, from, to))
+			if (outsideBoard(to.x, to.y))
 				break;
-				
-			moves.push_back(to);
+
+			char tile = state->tiles[to.x][to.y];
+
+			if (tile == EMPTY)
+				moves.push_back(to);
+			else
+			{
+				if (!isAlly(state->tiles[from.x][from.y], tile))
+					moves.push_back(to);
+
+				break;
+			}
 		}
 
 	return moves;
@@ -82,10 +84,20 @@ std::list<struct Vector> getRookMoves(struct State* state, struct Vector from, i
 
 			Vector to = { from.x + x , from.y + y};
 
-			if (!isValidTile(state, from, to))
+			if (outsideBoard(to.x, to.y))
 				break;
 
-			moves.push_back(to);
+			char tile = state->tiles[to.x][to.y];
+
+			if (tile == EMPTY)
+				moves.push_back(to);
+			else
+			{
+				if (!isAlly(state->tiles[from.x][from.y], tile))
+					moves.push_back(to);
+
+				break;
+			}
 		}
 
 	return moves;
@@ -146,7 +158,7 @@ std::list<struct Vector> getPawnMoves(struct State* state, struct Vector from)
 
 		if (x == from.x)
 		{
-			if (state->tiles[from.x][from.y + y] == EMPTY)
+			if (state->tiles[from.x][y] == EMPTY)
 			{
 				moves.push_back({ from.x, y }); //advance
 
@@ -267,16 +279,10 @@ bool isThreatened(struct State* state, struct Vector square, bool color)
 
 bool isCheck(struct State* state, bool color)
 {
-	struct Vector square;
+	struct Vector king = state->getKing(color);
 
-	//find the coordinates of the king
-	for (int x = 0; x < BOARD_SIZE; x++)
-		for (int y = 0; y < BOARD_SIZE; y++)
-		{
-			char tile = state->tiles[x][y];
-			if (getType(tile) == KING && getColor(tile) == color)
-				square = { x, y };
-		}
+	if (king.isEqual(-1, -1))
+		return false;
 
-	return isThreatened(state, square, color);
+	return isThreatened(state, king, color);
 }
