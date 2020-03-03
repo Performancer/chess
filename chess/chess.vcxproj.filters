@@ -36,6 +36,9 @@
     <ClCompile Include="ai.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="evaluation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.h">
@@ -60,6 +63,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ai.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="evaluation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

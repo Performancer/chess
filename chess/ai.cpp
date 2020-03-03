@@ -10,9 +10,9 @@
 EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool is_black)
 {
 	if (!state->has_black_king)
-		return { 1000, -1, -1, -1, -1 };
+		return { 20000, -1, -1, -1, -1 };
 	else if (!state->has_white_king)
-		return { -1000, -1, -1, -1, -1 };
+		return { -20000, -1, -1, -1, -1 };
 	else if (depth == 0)
 		return { state->evaluate(), -1, -1, -1, -1 };
 
@@ -58,5 +58,5 @@ EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool 
 
 EvaluatedMove getNextMove(struct State* state, bool color)
 {
-	return minimax(state, 6, INT_MIN, INT_MAX, color);
+	return minimax(state, 4, INT_MIN, INT_MAX, color);
 }

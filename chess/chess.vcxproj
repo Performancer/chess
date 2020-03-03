@@ -116,6 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ai.cpp" />
+    <ClCompile Include="evaluation.cpp" />
     <ClCompile Include="generator.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
@@ -125,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ai.h" />
+    <ClInclude Include="evaluation.h" />
     <ClInclude Include="generator.h" />
     <ClInclude Include="movement.h" />
     <ClInclude Include="output.h" />

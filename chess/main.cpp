@@ -22,7 +22,7 @@ int main()
 
 		bool color = turn % 2 != 0; //white = 0, black = 1
 
-		if (color == player_color)
+		if (false)
 		{
 			Move move = getMove(color);
 

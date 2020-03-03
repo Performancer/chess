@@ -1,4 +1,5 @@
 #include "state.h"
+#include "evaluation.h"
 #include "generator.h"
 #include "move.h"
 #include <math.h>
@@ -70,65 +71,10 @@ int State::evaluate()
 			if (tile == EMPTY)
 				continue;
 
-			char type = getType(tile);
-			bool color = getColor(tile);
-
-			int value = 0;
-
-			switch (type)
-			{
-				case KING: 
-				{
-					if (y == color ? 7 : 0)
-					{
-						value = 2;
-
-						if (x == 2)
-							value += 2;
-						else if (x == 6)
-							value += 2;
-					}
-					break;
-				}
-				case QUEEN: 
-				{
-					value += 9;
-					break;
-				}
-				case ROOK:
-				{
-					value = 5;
-
-					if ((!color && y != 0) || (color && y != 7))
-						value += 1;
-
-					break;
-				}
-				case BISHOP:
-				{
-					value = 3.25;
-
-					if ((!color && y != 0) || (color && y != 7))
-						value += 1;
-
-					break; 
-				}
-				case KNIGHT: 
-				{
-					value = 3;
-
-					if (x > 1 && x < 6)
-						value += 1;
-
-					break; 
-				}
-				case PAWN:		value = 1;		break;
-			}
-
-			if (color)
-				black += value;
+			if (getColor(tile))
+				black += getValue(getType(tile), x, y);
 			else
-				white += value;
+				white += getValue(getType(tile), x, -y);
 		}
 	}
 
