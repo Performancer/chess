@@ -73,25 +73,26 @@ int State::evaluate()
 			char type = getType(tile);
 			bool color = getColor(tile);
 
-			double value = 0;
+			int value = 0;
 
 			switch (type)
 			{
 				case KING: 
 				{
 					if (y == color ? 7 : 0)
-						value += 2;
-					
-					if (x == 2 && y == color ? 7 : 0)
-						value += 10;
-					else if (x == 6 && color ? 7 : 0)
-						value += 10;
+					{
+						value = 2;
+
+						if (x == 2)
+							value += 2;
+						else if (x == 6)
+							value += 2;
+					}
 					break;
 				}
 				case QUEEN: 
 				{
 					value += 9;
-					value += (8 - (abs(x - 4) + abs(x - 4))) / 2;
 					break;
 				}
 				case ROOK:
@@ -116,7 +117,7 @@ int State::evaluate()
 				{
 					value = 3;
 
-					if (x > 2 && x < 6)
+					if (x > 1 && x < 6)
 						value += 1;
 
 					break; 
@@ -138,7 +139,6 @@ struct Vector State::getKing(bool color)
 {
 	struct Vector king = { -1, -1 };
 
-	//find the king
 	for (int x = 0; x < BOARD_SIZE; x++)
 		for (int y = 0; y < BOARD_SIZE; y++)
 		{
@@ -148,10 +148,4 @@ struct Vector State::getKing(bool color)
 		}
 
 	return king;
-}
-
-bool State::isCheckmate(bool color)
-{
-	struct Vector king = getKing(color);
-	return king.isEqual(-1, -1);
 }

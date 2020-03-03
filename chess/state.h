@@ -16,6 +16,9 @@ struct State
 {
 	char tiles[8][8];
 
+	bool has_white_king = true;
+	bool has_black_king = true;
+
 	bool white_can_castle_king_side = true;
 	bool white_can_castle_queen_side = true;
 	bool black_can_castle_king_side = true;
@@ -29,7 +32,6 @@ struct State
 
 	int evaluate();
 	struct Vector getKing(bool color);
-	bool isCheckmate(bool color);
 };
 
 char getType(char tile);

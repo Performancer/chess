@@ -225,67 +225,54 @@ std::vector<struct Move> getMoves(struct State* state, bool color)
 
 bool isThreatened(struct State* state, struct Vector square, bool color)
 {
-	for (int x = 0; x < BOARD_SIZE; x++)
-		for (int y = 0; y < BOARD_SIZE; y++)
-		{
-			char tile = state->tiles[x][y];
+	std::vector<struct Vector> vector = getBishopMoves(state, square);
+	for (struct Vector from : vector)
+	{
+		char tile = state->tiles[from.x][from.y];
 
-			if (tile != EMPTY && getColor(tile) != color)
-			{
-				struct Vector from = { x, y };
+		if (tile == EMPTY)
+			continue;
 
-				std::vector<struct Vector> vector = getBishopMoves(state, square);
-				for (struct Vector from : vector)
-				{
-					char tile = state->tiles[from.x][from.y];
+		char type = getType(tile);
 
-					if (tile == EMPTY)
-						continue;
+		if (getColor(tile) != color && (type == BISHOP || type == QUEEN || (type == KING && abs(square.x - from.x) <= 1 && abs(square.y - from.y) <= 1)))
+			return true;
+	}
 
-					char type = getType(tile);
+	vector = getRookMoves(state, square);
+	for (struct Vector from : vector)
+	{
+		char tile = state->tiles[from.x][from.y];
 
-					if (getColor(tile) != color && (type == BISHOP || type == QUEEN || (type == KING && abs(square.x - from.x) <= 1 && abs(square.y - from.y) <= 1)))
-						return true;
-				}
+		if (tile == EMPTY)
+			continue;
 
-				vector = getRookMoves(state, square);
-				for (struct Vector from : vector)
-				{
-					char tile = state->tiles[from.x][from.y];
+		char type = getType(tile);
 
-					if (tile == EMPTY)
-						continue;
+		if (getColor(tile) != color && (type == ROOK || type == QUEEN || (type == KING && abs(square.x - from.x) <= 1 && abs(square.y - from.y) <= 1)))
+			return true;
+	}
 
-					char type = getType(tile);
+	vector = getKnightMoves(state, square);
+	for (struct Vector from : vector)
+	{
+		char tile = state->tiles[from.x][from.y];
 
-					if (getColor(tile) != color && (type == ROOK || type == QUEEN || (type == KING && abs(square.x - from.x) <= 1 && abs(square.y - from.y) <= 1)))
-						return true;
-				}
+		if (tile != EMPTY && getColor(tile) != color && getType(tile) == KNIGHT)
+			return true;
+	}
 
-				vector = getKnightMoves(state, square);
-				for (struct Vector from : vector)
-				{
-					char tile = state->tiles[from.x][from.y];
+	int direction = color ? -1 : 1;
 
-					if (tile != EMPTY && getColor(tile) != color && getType(tile) == KNIGHT)
-						return true;
-				}
+	char tile = state->tiles[square.x - 1][square.y + direction];
+	if (tile != EMPTY && getColor(tile) != color && getType(tile) == PAWN)
+		return true;
 
-				vector = getPawnMoves(state, square);
-				for (struct Vector from : vector)
-				{
-					int direction = color ? -1 : 1;
+	tile = state->tiles[square.x + 1][square.y + direction];
+	if (tile != EMPTY && getColor(tile) != color && getType(tile) == PAWN)
+		return true;
 
-					char tile = state->tiles[from.x - 1][from.y + direction];
-					if (tile != EMPTY && getColor(tile) != color && getType(tile) == PAWN)
-						return true;
-
-					tile = state->tiles[from.x + 1][from.y + direction];
-					if (tile != EMPTY && getColor(tile) != color && getType(tile) == PAWN)
-						return true;
-				}
-			}
-		}
+	//We do not take en passe into account, because we never call this function for a pawn
 
 	return false;
 }

@@ -5,6 +5,8 @@
 #include "generator.h"
 #include "ai.h"
 
+#include <iostream>
+
 int main()
 {
 	State state;
@@ -33,9 +35,18 @@ int main()
 		}
 		else
 		{
-			Move move = getNextMove(&state, color);
-			executeMove(&state, move, true);
-			last_move = move;
+			EvaluatedMove evad_move = getNextMove(&state, color);
+
+			std::wcout << "Eval: "<< evad_move.eval << std::endl;
+
+			/*std::vector<struct Vector> moves = getMoves(&state, evad_move.move.from);
+			std::wcout << "Possible moves are: " << std::endl;
+			for (auto move : moves)
+				std::wcout << "   to (" << move.x << ", " << move.y << ")" << std::endl;
+			*/
+
+			executeMove(&state, evad_move.move, true);
+			last_move = evad_move.move;
 			turn++;
 		}
 	}

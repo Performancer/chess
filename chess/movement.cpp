@@ -9,6 +9,16 @@
 
 void movePiece(struct State* state, struct Vector from, struct Vector to)
 {
+	char destination = state->tiles[to.x][to.y];
+
+	if (getType(destination) == KING)
+	{
+		if (getColor(destination))
+			state->has_black_king = false;
+		else
+			state->has_white_king = false;
+	}
+
 	char piece = state->tiles[from.x][from.y];
 	state->tiles[from.x][from.y] = EMPTY;
 	state->tiles[to.x][to.y] = piece;
@@ -106,7 +116,7 @@ void executeMove(struct State* state, Move move, bool inform = false)
 
 	movePiece(state, move.from, move.to);
 
-	char piece = state->tiles[move.from.x][move.from.y];
+	char piece = state->tiles[move.to.x][move.to.y];
 	char type = getType(piece);
 	bool color = getColor(piece); //white = 0, black = 1
 

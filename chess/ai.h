@@ -2,4 +2,4 @@
 #include "move.h"
 #include "state.h"
 
-Move getNextMove(struct State* state, bool color);
+EvaluatedMove getNextMove(struct State* state, bool color);

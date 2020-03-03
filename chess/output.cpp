@@ -34,9 +34,9 @@ void draw(struct State* state, struct Move last_move)
 			if (x == last_move.from.x && y == last_move.from.y || x == last_move.to.x && y == last_move.to.y)
 				color = MOVE_COLOR;
 			else if (y % 2 != 0 && x % 2 == 0 || y % 2 == 0 && x % 2 != 0)
-				color = BLACK_SQUARE;
-			else
 				color = WHITE_SQUARE;
+			else
+				color = BLACK_SQUARE;
 
 			if (!black)
 				color |= WHITE_TEXT;
