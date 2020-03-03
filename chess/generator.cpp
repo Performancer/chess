@@ -14,9 +14,9 @@ bool outsideBoard(int x, int y)
 	return x < 0 || y < 0 || x >= BOARD_SIZE || y >= BOARD_SIZE;
 }
 
-std::list<struct Vector> getKnightMoves(struct State* state, struct Vector from)
+std::vector<struct Vector> getKnightMoves(struct State* state, struct Vector from)
 {
-	std::list<struct Vector> moves;
+	std::vector<struct Vector> moves;
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -39,9 +39,9 @@ std::list<struct Vector> getKnightMoves(struct State* state, struct Vector from)
 	return moves;
 }
 
-std::list<struct Vector> getBishopMoves(struct State* state, struct Vector from, int range = BOARD_SIZE)
+std::vector<struct Vector> getBishopMoves(struct State* state, struct Vector from, int range = BOARD_SIZE)
 {
-	std::list<struct Vector> moves;
+	std::vector<struct Vector> moves;
 
 	for (int direction = 0; direction < 4; direction++)
 		for (int distance = 1; distance < range + 1; distance++)
@@ -69,9 +69,9 @@ std::list<struct Vector> getBishopMoves(struct State* state, struct Vector from,
 	return moves;
 }
 
-std::list<struct Vector> getRookMoves(struct State* state, struct Vector from, int range = BOARD_SIZE)
+std::vector<struct Vector> getRookMoves(struct State* state, struct Vector from, int range = BOARD_SIZE)
 {
-	std::list<struct Vector> moves;
+	std::vector<struct Vector> moves;
 
 	for (int direction = 0; direction < 4; direction++)
 		for (int distance = 1; distance < range + 1; distance++)
@@ -103,9 +103,9 @@ std::list<struct Vector> getRookMoves(struct State* state, struct Vector from, i
 	return moves;
 }
 
-std::list<struct Vector> getQueenMoves(struct State* state, struct Vector from, int range = BOARD_SIZE)
+std::vector<struct Vector> getQueenMoves(struct State* state, struct Vector from, int range = BOARD_SIZE)
 {
-	std::list<struct Vector> moves;
+	std::vector<struct Vector> moves;
 	for (struct Vector vector : getBishopMoves(state, from, range))
 		moves.push_back(vector);
 	for (struct Vector vector : getRookMoves(state, from, range))
@@ -114,9 +114,9 @@ std::list<struct Vector> getQueenMoves(struct State* state, struct Vector from, 
 	return moves;
 }
 
-std::list<struct Vector> getKingMoves(struct State* state, struct Vector from)
+std::vector<struct Vector> getKingMoves(struct State* state, struct Vector from)
 {
-	std::list<struct Vector> moves = getQueenMoves(state, from, 1);
+	std::vector<struct Vector> moves = getQueenMoves(state, from, 1);
 
 	bool color = getColor(state->tiles[from.x][from.y]);
 
@@ -143,9 +143,9 @@ bool pawnHasMoved(int y, bool is_black)
 	return y != 1;
 }
 
-std::list<struct Vector> getPawnMoves(struct State* state, struct Vector from)
+std::vector<struct Vector> getPawnMoves(struct State* state, struct Vector from)
 {
-	std::list<struct Vector> moves;
+	std::vector<struct Vector> moves;
 
 	char piece = state->tiles[from.x][from.y];
 	bool is_black = getColor(piece);	
@@ -179,9 +179,9 @@ std::list<struct Vector> getPawnMoves(struct State* state, struct Vector from)
 	return moves;
 }
 
-std::list<struct Vector> getMoves(struct State* state, struct Vector from)
+std::vector<struct Vector> getMoves(struct State* state, struct Vector from)
 {
-	std::list<struct Vector> moves;
+	std::vector<struct Vector> moves;
 
 	char square = state->tiles[from.x][from.y];
 
@@ -195,7 +195,7 @@ std::list<struct Vector> getMoves(struct State* state, struct Vector from)
 		case PAWN:		moves = getPawnMoves(state, from);		break;
 	}
 
-	std::list<struct Vector> validated;
+	std::vector<struct Vector> validated;
 
 	for (struct Vector to : moves)
 	{
@@ -210,6 +210,19 @@ std::list<struct Vector> getMoves(struct State* state, struct Vector from)
 	return validated;
 }
 
+std::vector<struct Move> getMoves(struct State* state, bool color)
+{
+	std::vector<struct Move> moves;
+
+	for (int x = 0; x < BOARD_SIZE; x++)
+		for (int y = 0; y < BOARD_SIZE; y++)
+			if (getColor(state->tiles[x][y]) == color) //AI can only move the color assigned
+				for (struct Vector vector : getMoves(state, { x, y }))
+					moves.push_back({ x, y, vector.x, vector.y });
+
+	return moves;
+}
+
 bool isThreatened(struct State* state, struct Vector square, bool color)
 {
 	for (int x = 0; x < BOARD_SIZE; x++)
@@ -221,7 +234,7 @@ bool isThreatened(struct State* state, struct Vector square, bool color)
 			{
 				struct Vector from = { x, y };
 
-				std::list<struct Vector> vector = getBishopMoves(state, square);
+				std::vector<struct Vector> vector = getBishopMoves(state, square);
 				for (struct Vector from : vector)
 				{
 					char tile = state->tiles[from.x][from.y];

@@ -79,11 +79,12 @@ int State::evaluate()
 			{
 				case KING: 
 				{
-					if (getType(tiles[4][color ? 7 : 0]))
+					if (y == color ? 7 : 0)
 						value += 2;
-					else if (getType(tiles[2][color ? 7 : 0]))
+					
+					if (x == 2 && y == color ? 7 : 0)
 						value += 10;
-					else if (getType(tiles[6][color ? 7 : 0]))
+					else if (x == 6 && color ? 7 : 0)
 						value += 10;
 					break;
 				}
