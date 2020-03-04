@@ -9,11 +9,13 @@
 
 EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool is_black)
 {
+	if (!state->has_white_king)
+		return { -20000, -1, -1, -1, -1 };
+
 	if (!state->has_black_king)
 		return { 20000, -1, -1, -1, -1 };
-	else if (!state->has_white_king)
-		return { -20000, -1, -1, -1, -1 };
-	else if (depth == 0)
+
+	if (depth == 0)
 		return { state->evaluate(), -1, -1, -1, -1 };
 
 	std::vector<struct Move> moves = getMoves(state, is_black);
@@ -58,5 +60,5 @@ EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool 
 
 EvaluatedMove getNextMove(struct State* state, bool color)
 {
-	return minimax(state, 4, INT_MIN, INT_MAX, color);
+	return minimax(state, color ? 4 : 6, INT_MIN, INT_MAX, color);
 }

@@ -37,7 +37,10 @@ int main()
 		{
 			EvaluatedMove evad_move = getNextMove(&state, color);
 
-			std::wcout << "Eval: "<< evad_move.eval << std::endl;
+			if (evad_move.move.from.isEqual(-1, -1))
+				break;
+
+			std::wcout << "Turn: " << (turn + 1) << " Eval: "<< evad_move.eval << std::endl;
 
 			/*std::vector<struct Vector> moves = getMoves(&state, evad_move.move.from);
 			std::wcout << "Possible moves are: " << std::endl;

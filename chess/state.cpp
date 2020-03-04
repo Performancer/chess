@@ -74,7 +74,7 @@ int State::evaluate()
 			if (getColor(tile))
 				black += getValue(getType(tile), x, y);
 			else
-				white += getValue(getType(tile), x, -y);
+				white += getValue(getType(tile), x, 7 - y);
 		}
 	}
 
