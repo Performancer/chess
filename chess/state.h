@@ -28,9 +28,10 @@ struct State
 	struct Vector en_passant = { -1, -1 };
 
 	void initialize();
-	struct State simulate(struct Move move);
-	int evaluate();
-	struct Vector getKing(bool color);
+
+	struct State simulate(struct Move move) const;
+	struct Vector getKing(bool color) const;
+	int evaluate() const;
 };
 
 char getType(char tile);

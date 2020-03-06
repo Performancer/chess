@@ -50,14 +50,14 @@ void State::initialize()
 		tiles[x][6] = PAWN | BLACK;
 }
 
-struct State State::simulate(struct Move move)
+struct State State::simulate(struct Move move) const
 {
 	struct State copy = *this;
 	executeMove(&copy, move);
 	return copy;
 }
 
-int State::evaluate()
+int State::evaluate() const
 {
 	int white = 0;
 	int black = 0;
@@ -79,7 +79,7 @@ int State::evaluate()
 	return white - black;
 }
 
-struct Vector State::getKing(bool color)
+struct Vector State::getKing(bool color) const
 {
 	struct Vector king = { -1, -1 };
 

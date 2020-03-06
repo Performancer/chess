@@ -13,18 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\AI">
+      <UniqueIdentifier>{e0b43c9f-9e08-447d-85c0-5136a44fb820}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tools">
+      <UniqueIdentifier>{91fc417f-4129-423e-a84f-ff1ac9bae602}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="input.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="generator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="output.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="state.cpp">
@@ -34,23 +34,23 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ai.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\AI</Filter>
     </ClCompile>
     <ClCompile Include="evaluation.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="output.cpp">
+      <Filter>Source Files\Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="input.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="move.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="state.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="output.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vector.h">
@@ -62,14 +62,20 @@
     <ClInclude Include="movement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="clock.h">
+      <Filter>Source Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>Source Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="output.h">
+      <Filter>Source Files\Tools</Filter>
+    </ClInclude>
     <ClInclude Include="ai.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\AI</Filter>
     </ClInclude>
     <ClInclude Include="evaluation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="clock.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\AI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
