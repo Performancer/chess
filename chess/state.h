@@ -1,5 +1,5 @@
 #pragma once
-#include "vector.h"
+#include "move.h"
 
 #define KING	0x0
 #define QUEEN	0x1
@@ -28,8 +28,7 @@ struct State
 	struct Vector en_passant = { -1, -1 };
 
 	void initialize();
-	void copyState(struct State* copyTo);
-
+	struct State simulate(struct Move move);
 	int evaluate();
 	struct Vector getKing(bool color);
 };

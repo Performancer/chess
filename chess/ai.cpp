@@ -24,9 +24,7 @@ EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool 
 
 	for (Move move : moves)
 	{
-		struct State temp;
-		state->copyState(&temp);
-		executeMove(&temp, move);
+		struct State temp = state->simulate(move);
 
 		EvaluatedMove evad_move = minimax(&temp, depth - 1, alpha, beta, !is_black);
 
@@ -49,16 +47,11 @@ EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool 
 			break;
 	}
 
-	/*for(int i = 0; i < (6 - depth); i++ )
-		std::wcout << "  ";
-
-	std::wcout << "depth: " << depth << " " << "eval: " << best_move.eval << std::endl; */
-
 	return best_move;
 }
 
 
 EvaluatedMove getNextMove(struct State* state, bool color)
 {
-	return minimax(state, color ? 4 : 6, INT_MIN, INT_MAX, color);
+	return minimax(state, 6, INT_MIN, INT_MAX, color);
 }

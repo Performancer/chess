@@ -2,7 +2,7 @@
 #include "evaluation.h"
 #include "generator.h"
 #include "move.h"
-#include <math.h>
+#include "movement.h"
 
 char getType(char tile)
 {
@@ -50,11 +50,11 @@ void State::initialize()
 		tiles[x][6] = PAWN | BLACK;
 }
 
-void State::copyState(struct State* copyTo)
+struct State State::simulate(struct Move move)
 {
-	for (int x = 0; x < 8; x++)
-		for (int y = 0; y < 8; y++)
-			copyTo->tiles[x][y] = tiles[x][y];
+	struct State copy = *this;
+	executeMove(&copy, move);
+	return copy;
 }
 
 int State::evaluate()
@@ -63,7 +63,6 @@ int State::evaluate()
 	int black = 0;
 
 	for (int x = 0; x < BOARD_SIZE; x++)
-	{
 		for (int y = 0; y < BOARD_SIZE; y++)
 		{
 			char tile = tiles[x][y];
@@ -76,7 +75,6 @@ int State::evaluate()
 			else
 				white += getValue(getType(tile), x, 7 - y);
 		}
-	}
 
 	return white - black;
 }

@@ -126,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ai.h" />
+    <ClInclude Include="clock.h" />
     <ClInclude Include="evaluation.h" />
     <ClInclude Include="generator.h" />
     <ClInclude Include="movement.h" />

@@ -199,9 +199,7 @@ std::vector<struct Vector> getMoves(struct State* state, struct Vector from)
 
 	for (struct Vector to : moves)
 	{
-		State temp;
-		state->copyState(&temp);
-		executeMove(&temp, { from, to });
+		State temp = state->simulate({ from, to });
 
 		if (!isCheck(&temp, getColor(square)))
 			validated.push_back(to);

@@ -1,3 +1,4 @@
+#include "clock.h"
 #include "state.h"
 #include "input.h"
 #include "output.h"
@@ -5,19 +6,19 @@
 #include "generator.h"
 #include "ai.h"
 
-#include <iostream>
-
 int main()
 {
 	State state;
 	state.initialize();
 
-	bool player_color = false;
-
-	Move last_move = { -1, -1, -1, -1 };
 	int turn = 0;
+	Move last_move = { -1, -1, -1, -1 };
+	bool player_color = false;
+	int seconds, militm;
+
 	while(true)
 	{
+		startClock();
 		draw(&state, last_move);
 
 		bool color = turn % 2 != 0; //white = 0, black = 1
@@ -40,7 +41,7 @@ int main()
 			if (evad_move.move.from.isEqual(-1, -1))
 				break;
 
-			std::wcout << "Turn: " << (turn + 1) << " Eval: "<< evad_move.eval << std::endl;
+			wprintf(L"Turn: %d Eval: %d\n", (turn + 1), evad_move.eval);
 
 			/*std::vector<struct Vector> moves = getMoves(&state, evad_move.move.from);
 			std::wcout << "Possible moves are: " << std::endl;
@@ -52,6 +53,9 @@ int main()
 			last_move = evad_move.move;
 			turn++;
 		}
+
+		stopClock(&seconds, &militm);
+		wprintf(L"Last frame took %ld.%03d seconds.\n", seconds, militm);
 	}
 
 	wprintf(L"The game has ended.");

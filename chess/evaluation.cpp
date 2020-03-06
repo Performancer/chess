@@ -73,48 +73,27 @@ int king[8][8] =
 	{ 20, 30, 10,  0,  0, 10, 30, 20}
 };
 
+int king_end[8][8] =
+{
+	{-50,-40,-30,-20,-20,-30,-40,-50},
+	{-30,-20,-10,  0,  0,-10,-20,-30},
+	{-30,-10, 20, 30, 30, 20,-10,-30},
+	{-30,-10, 30, 40, 40, 30,-10,-30},
+	{-30,-10, 30, 40, 40, 30,-10,-30},
+	{-30,-10, 20, 30, 30, 20,-10,-30},
+	{-30,-30,  0,  0,  0,  0,-30,-30},
+	{-50,-30,-30,-30,-30,-30,-30,-50}
+};
 
 int getValue(char type, int x, int y)
 {
-	int value = 0;
 	switch (type)
 	{
-		case KING:
-		{
-			value += king[x][y];
-			break;
-		}
-		case QUEEN:
-		{
-			value = 900;
-			value += queen[x][y];
-			break;
-		}
-		case ROOK:
-		{
-			value = 500;
-			value += rook[x][y];
-			break;
-		}
-		case BISHOP:
-		{
-			value = 330;
-			value += bishop[x][y];
-			break;
-		}
-		case KNIGHT:
-		{
-			value = 320;
-			value += knight[x][y];
-			break;
-		}
-		case PAWN:
-		{
-			value = 100;
-			value += pawn[x][y];
-			break;
-		}
+		case KING:		return king[x][y];
+		case QUEEN:		return 900 + queen[x][y];
+		case ROOK:		return 500 + rook[x][y];
+		case BISHOP:	return 330 + bishop[x][y];
+		case KNIGHT:	return 320 + knight[x][y];
+		case PAWN:		return 100 + pawn[x][y];
 	}
-
-	return value;
 }
