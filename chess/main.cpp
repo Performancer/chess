@@ -5,9 +5,12 @@
 #include "movement.h"
 #include "generator.h"
 #include "ai.h"
+#include "transposition.h"
 
 int main()
 {
+	initialize_zobrist();
+
 	State state;
 	state.initialize();
 

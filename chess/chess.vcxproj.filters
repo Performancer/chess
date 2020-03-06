@@ -45,6 +45,9 @@
     <ClCompile Include="output.cpp">
       <Filter>Source Files\Tools</Filter>
     </ClCompile>
+    <ClCompile Include="transposition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="move.h">
@@ -76,6 +79,9 @@
     </ClInclude>
     <ClInclude Include="evaluation.h">
       <Filter>Source Files\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="transposition.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

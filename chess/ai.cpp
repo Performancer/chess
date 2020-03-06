@@ -1,11 +1,10 @@
 #include "ai.h"
 #include "generator.h"
 #include "movement.h"
-
+#include "transposition.h"
 #include <limits>
 #include <vector>
 #include <algorithm>
-#include <iostream>
 
 EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool is_black)
 {
@@ -53,5 +52,6 @@ EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool 
 
 EvaluatedMove getNextMove(struct State* state, bool color)
 {
+	wprintf(L"Hash: %d\n", hash(state));
 	return minimax(state, 6, INT_MIN, INT_MAX, color);
 }
