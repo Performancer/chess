@@ -7,6 +7,14 @@
 #include "ai.h"
 #include "transposition.h"
 
+void printPossibleMoves(struct State* state, struct Vector from)
+{
+	std::vector<struct Vector> moves = getMoves(state, from);
+	wprintf(L"Possible moves are:\n");
+	for (auto move : moves)
+		wprintf(L"   to (%d, %d)\n", move.x, move.y);
+}
+
 int main()
 {
 	initialize_zobrist();
@@ -16,7 +24,7 @@ int main()
 
 	int turn = 0;
 	Move last_move = { -1, -1, -1, -1 };
-	bool player_color = false;
+	bool player_color = true;
 	int seconds, militm;
 
 	while(true)
@@ -46,12 +54,6 @@ int main()
 
 			wprintf(L"Turn: %d Eval: %d\n", (turn + 1), evad_move.eval);
 
-			/*std::vector<struct Vector> moves = getMoves(&state, evad_move.move.from);
-			std::wcout << "Possible moves are: " << std::endl;
-			for (auto move : moves)
-				std::wcout << "   to (" << move.x << ", " << move.y << ")" << std::endl;
-			*/
-
 			executeMove(&state, evad_move.move, true);
 			last_move = evad_move.move;
 			turn++;
@@ -59,8 +61,9 @@ int main()
 
 		stopClock(&seconds, &militm);
 		wprintf(L"Last frame took %ld.%03d seconds.\n", seconds, militm);
+		wprintf(L"There are %d pieces left.\n", state.pieces);
 	}
 
-	wprintf(L"The game has ended.");
-	getchar();
+	wprintf(L"The game has ended.\n");
+	system("pause");
 }

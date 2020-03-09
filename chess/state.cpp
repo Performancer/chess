@@ -1,8 +1,8 @@
 #include "state.h"
-#include "evaluation.h"
-#include "generator.h"
 #include "move.h"
 #include "movement.h"
+#include "validation.h"
+#include "evaluation.h"
 
 char getType(char tile)
 {
@@ -59,6 +59,11 @@ struct State State::simulate(struct Move move) const
 
 int State::evaluate() const
 {
+	if (white_king.isEqual(-1, -1))
+		return -20000;
+	else if (black_king.isEqual(-1, -1))
+		return 20000;
+
 	int white = 0;
 	int black = 0;
 
@@ -79,17 +84,7 @@ int State::evaluate() const
 	return white - black;
 }
 
-struct Vector State::getKing(bool color) const
+bool State::isCheck(bool color)
 {
-	struct Vector king = { -1, -1 };
-
-	for (int x = 0; x < BOARD_SIZE; x++)
-		for (int y = 0; y < BOARD_SIZE; y++)
-		{
-			char tile = tiles[x][y];
-			if (getType(tile) == KING && getColor(tile) == color)
-				king = { x, y };
-		}
-
-	return king;
+	return isThreatened(this, color ? black_king : white_king, color);
 }

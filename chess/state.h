@@ -16,8 +16,9 @@ struct State
 {
 	char tiles[8][8];
 
-	bool has_white_king = true;
-	bool has_black_king = true;
+	int pieces = 32;
+	struct Vector white_king = { 4, 0 };
+	struct Vector black_king = { 4, 7 };
 
 	bool white_can_castle_king_side = true;
 	bool white_can_castle_queen_side = true;
@@ -30,7 +31,7 @@ struct State
 	void initialize();
 
 	struct State simulate(struct Move move) const;
-	struct Vector getKing(bool color) const;
+	bool isCheck(bool color);
 	int evaluate() const;
 };
 

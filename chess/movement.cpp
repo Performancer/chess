@@ -9,17 +9,29 @@
 
 void movePiece(struct State* state, struct Vector from, struct Vector to)
 {
+	char piece = state->tiles[from.x][from.y];
 	char destination = state->tiles[to.x][to.y];
+
+	if (destination != EMPTY)
+		state->pieces--;
+
+	if (getType(piece) == KING)
+	{
+		if (getColor(piece))
+			state->black_king = { to.x, to.y };
+		else
+			state->white_king = { to.x, to.y };
+	}
 
 	if (getType(destination) == KING)
 	{
 		if (getColor(destination))
-			state->has_black_king = false;
+			state->black_king = { -1, -1 };
 		else
-			state->has_white_king = false;
+			state->white_king = { -1, -1 };
 	}
 
-	char piece = state->tiles[from.x][from.y];
+
 	state->tiles[from.x][from.y] = EMPTY;
 	state->tiles[to.x][to.y] = piece;
 }
@@ -48,6 +60,7 @@ void checkEnPasse(struct State* state, Move move, bool inform)
 				if (inform)
 					std::wcout << "En Passant executed" << std::endl;
 
+				state->pieces--;
 				state->tiles[move.to.x][move.from.y] = EMPTY;
 			}
 		}

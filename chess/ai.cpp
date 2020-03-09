@@ -5,29 +5,26 @@
 #include <limits>
 #include <vector>
 #include <algorithm>
+#include <map>
 
-EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool is_black)
+int table_uses = 0;
+
+EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool color)
 {
-	if (!state->has_white_king)
-		return { -20000, -1, -1, -1, -1 };
-
-	if (!state->has_black_king)
-		return { 20000, -1, -1, -1, -1 };
-
 	if (depth == 0)
 		return { state->evaluate(), -1, -1, -1, -1 };
 
-	std::vector<struct Move> moves = getMoves(state, is_black);
+	std::vector<struct Move> moves = getMoves(state, color);
 
-	EvaluatedMove best_move = { is_black ? INT_MAX : INT_MIN, -1, -1, -1, -1 };
+	EvaluatedMove best_move = { color ? INT_MAX : INT_MIN, -1, -1, -1, -1 };
 
 	for (Move move : moves)
 	{
 		struct State temp = state->simulate(move);
 
-		EvaluatedMove evad_move = minimax(&temp, depth - 1, alpha, beta, !is_black);
+		EvaluatedMove evad_move = minimax(&temp, depth - 1, alpha, beta, !color);
 
-		if (is_black)
+		if (color)
 		{
 			if (evad_move.eval < best_move.eval)
 				best_move = { evad_move.eval, move };
@@ -36,7 +33,7 @@ EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool 
 		}
 		else
 		{
-			if(evad_move.eval > best_move.eval)
+			if (evad_move.eval > best_move.eval)
 				best_move = { evad_move.eval, move };
 
 			alpha = std::max(alpha, evad_move.eval);
@@ -50,8 +47,82 @@ EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool 
 }
 
 
+EvaluatedMove minimaxWithMemory(struct State* state, int depth, int alpha, int beta, bool color)
+{
+	int hash_key = hash(state);
+	
+	if (transpositionExists(hash_key))
+	{
+		Transposition value = getTransposition(hash_key);
+		
+		if (value.depth >= depth)
+		{
+			table_uses++;
+
+			alpha = std::max(alpha, value.lower);
+			beta = std::min(beta, value.upper);
+		}
+	}
+
+	if (depth == 0)
+	{
+		int eval = state->evaluate();
+		addTransposition(hash_key, { depth, alpha, beta });
+		return { eval, -1, -1, -1, -1 };
+	}
+
+	std::vector<struct Move> moves = getMoves(state, color);
+
+	EvaluatedMove best_move = { color ? INT_MAX : INT_MIN, -1, -1, -1, -1 };
+
+	for (Move move : moves)
+	{
+		struct State temp = state->simulate(move);
+
+		EvaluatedMove evad_move = minimaxWithMemory(&temp, depth - 1, alpha, beta, !color);
+
+		if (color)
+		{
+			if (evad_move.eval < best_move.eval)
+				best_move = { evad_move.eval, move};
+
+			beta = std::min(beta, evad_move.eval);
+		}
+		else
+		{
+			if(evad_move.eval > best_move.eval)
+				best_move = { evad_move.eval, move};
+
+			alpha = std::max(alpha, evad_move.eval);
+		}
+
+		if (beta <= alpha)
+			break;
+	}
+
+	addTransposition(hash_key, { depth, alpha, beta });
+	return best_move;
+}
+
 EvaluatedMove getNextMove(struct State* state, bool color)
 {
-	wprintf(L"Hash: %d\n", hash(state));
-	return minimax(state, 6, INT_MIN, INT_MAX, color);
+	table_uses = 0;
+	int hash_key = hash(state);
+	int depth;
+
+	if (state->pieces > 16)
+		depth = 4;
+	else if (state->pieces > 8)
+		depth = 6;
+	else  if (state->pieces > 4)
+		depth = 8;
+	else
+		depth = 10;
+
+	wprintf(L"Hash: %d\n", hash_key);
+	wprintf(L"Depth: %d\n", depth);
+
+	EvaluatedMove move = !color ? minimaxWithMemory(state, depth, INT_MIN, INT_MAX, color) : minimax(state, 4, INT_MIN, INT_MAX, color);
+	wprintf(L"Transposition table has been used %d times this turn.\n", table_uses);
+	return move;
 }

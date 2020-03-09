@@ -30,4 +30,19 @@ int hash(struct State* state)
 	return h;
 }
 
-std::map<int, int> states;
+std::map<int, Transposition> table;
+
+bool transpositionExists(int key)
+{
+	return table.find(key) != table.end();
+}
+
+Transposition getTransposition(int key)
+{
+	return table[key];
+}
+
+void addTransposition(int key, Transposition value)
+{
+	table[key] = value;
+}
