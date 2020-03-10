@@ -76,9 +76,9 @@ int State::evaluate() const
 				continue;
 
 			if (getColor(tile))
-				black += getValue(getType(tile), x, y);
+				black += getValue(getType(tile), x, y, blacks);
 			else
-				white += getValue(getType(tile), x, 7 - y);
+				white += getValue(getType(tile), x, 7 - y, whites);
 		}
 
 	return white - black;

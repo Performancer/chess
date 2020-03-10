@@ -1,3 +1,3 @@
 #pragma once
 
-int getValue(char type, int x, int y);
+int getValue(char type, int x, int y, int allies);

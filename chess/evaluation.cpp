@@ -85,11 +85,11 @@ int king_end[8][8] =
 	{-50,-30,-30,-30,-30,-30,-30,-50}
 };
 
-int getValue(char type, int x, int y)
+int getValue(char type, int x, int y, int allies)
 {
 	switch (type)
 	{
-		case KING:		return king[x][y];
+		case KING:		return allies < 8 ? king_end[x][y] : king[x][y];
 		case QUEEN:		return 900 + queen[x][y];
 		case ROOK:		return 500 + rook[x][y];
 		case BISHOP:	return 330 + bishop[x][y];

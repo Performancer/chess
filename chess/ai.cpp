@@ -59,8 +59,10 @@ EvaluatedMove minimaxWithMemory(struct State* state, int depth, int alpha, int b
 		{
 			table_uses++;
 
-			alpha = std::max(alpha, value.lower);
-			beta = std::min(beta, value.upper);
+			if(!color)
+				alpha = std::max(alpha, value.upper);
+			else
+				beta = std::min(beta, value.lower);
 		}
 	}
 
@@ -100,7 +102,9 @@ EvaluatedMove minimaxWithMemory(struct State* state, int depth, int alpha, int b
 			break;
 	}
 
-	addTransposition(hash_key, { depth, alpha, beta });
+	if (!transpositionExists(hash_key))
+		addTransposition(hash_key, { depth, alpha, beta });
+
 	return best_move;
 }
 
@@ -110,11 +114,13 @@ EvaluatedMove getNextMove(struct State* state, bool color)
 	int hash_key = hash(state);
 	int depth;
 
-	if (state->pieces > 16)
+	int pieces = state->blacks + state->whites;
+
+	if (pieces > 16)
 		depth = 4;
-	else if (state->pieces > 8)
+	else if (pieces > 8)
 		depth = 6;
-	else  if (state->pieces > 4)
+	else  if (pieces > 4)
 		depth = 8;
 	else
 		depth = 10;
@@ -122,7 +128,7 @@ EvaluatedMove getNextMove(struct State* state, bool color)
 	wprintf(L"Hash: %d\n", hash_key);
 	wprintf(L"Depth: %d\n", depth);
 
-	EvaluatedMove move = !color ? minimaxWithMemory(state, depth, INT_MIN, INT_MAX, color) : minimax(state, 4, INT_MIN, INT_MAX, color);
+	EvaluatedMove move = !color ? minimaxWithMemory(state, 4, INT_MIN, INT_MAX, color) : minimax(state, 4, INT_MIN, INT_MAX, color);
 	wprintf(L"Transposition table has been used %d times this turn.\n", table_uses);
 	return move;
 }

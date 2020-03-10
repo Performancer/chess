@@ -16,7 +16,8 @@ struct State
 {
 	char tiles[8][8];
 
-	int pieces = 32;
+	int whites = 16;
+	int blacks = 16;
 	struct Vector white_king = { 4, 0 };
 	struct Vector black_king = { 4, 7 };
 

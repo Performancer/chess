@@ -61,7 +61,7 @@ int main()
 
 		stopClock(&seconds, &militm);
 		wprintf(L"Last frame took %ld.%03d seconds.\n", seconds, militm);
-		wprintf(L"There are %d pieces left.\n", state.pieces);
+		wprintf(L"There are %d pieces left.\n", state.whites + state.blacks);
 	}
 
 	wprintf(L"The game has ended.\n");
