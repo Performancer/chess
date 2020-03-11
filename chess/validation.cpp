@@ -7,8 +7,9 @@ bool isThreatened(struct State* state, struct Vector square, bool color)
 	if (outsideBoard(square))
 		return false;
 
-	std::vector<struct Vector> vector = getBishopMoves(state, square);
-	for (struct Vector from : vector)
+	std::vector<struct Vector> moves;
+	getBishopMoves(moves, state, square);
+	for (struct Vector from : moves)
 	{
 		char tile = state->tiles[from.x][from.y];
 
@@ -21,8 +22,9 @@ bool isThreatened(struct State* state, struct Vector square, bool color)
 			return true;
 	}
 
-	vector = getRookMoves(state, square);
-	for (struct Vector from : vector)
+	moves.clear();
+	getRookMoves(moves, state, square);
+	for (struct Vector from : moves)
 	{
 		char tile = state->tiles[from.x][from.y];
 
@@ -35,8 +37,9 @@ bool isThreatened(struct State* state, struct Vector square, bool color)
 			return true;
 	}
 
-	vector = getKnightMoves(state, square);
-	for (struct Vector from : vector)
+	moves.clear();
+	getKnightMoves(moves, state, square);
+	for (struct Vector from : moves)
 	{
 		char tile = state->tiles[from.x][from.y];
 

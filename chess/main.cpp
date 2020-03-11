@@ -9,7 +9,9 @@
 
 void printPossibleMoves(struct State* state, struct Vector from)
 {
-	std::vector<struct Vector> moves = getMoves(state, from);
+	std::vector<struct Vector> moves;
+	getMoves(moves, state, from);
+
 	wprintf(L"Possible moves are:\n");
 	for (auto move : moves)
 		wprintf(L"   to (%d, %d)\n", move.x, move.y);

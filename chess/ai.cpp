@@ -1,13 +1,17 @@
 #include "ai.h"
 #include "generator.h"
 #include "movement.h"
+#include "clock.h"
 #include "transposition.h"
 #include <limits>
 #include <vector>
 #include <algorithm>
 #include <map>
 
-int table_uses = 0;
+#define LIMIT 8
+
+static Clock clock;
+static int table_uses = 0;
 
 EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool color)
 {
@@ -79,6 +83,10 @@ EvaluatedMove minimaxWithMemory(struct State* state, int depth, int alpha, int b
 
 	for (Move move : moves)
 	{
+		clock.stop();
+		if (clock.getSeconds() >= LIMIT)
+			return { -1, -1, -1, -1, -1 };
+
 		struct State temp = state->simulate(move);
 
 		EvaluatedMove evad_move = minimaxWithMemory(&temp, depth - 1, alpha, beta, !color);
@@ -110,25 +118,33 @@ EvaluatedMove minimaxWithMemory(struct State* state, int depth, int alpha, int b
 
 EvaluatedMove getNextMove(struct State* state, bool color)
 {
+
+	if (!color)
+		return minimax(state, 2, INT_MIN, INT_MAX, color);
+
+	clock.start();
 	table_uses = 0;
+
 	int hash_key = transposition::hash(state);
-	int depth;
-
-	int pieces = state->blacks + state->whites;
-
-	if (pieces > 16)
-		depth = 4;
-	else if (pieces > 8)
-		depth = 6;
-	else  if (pieces > 4)
-		depth = 8;
-	else
-		depth = 10;
-
 	wprintf(L"Hash: %d\n", hash_key);
-	wprintf(L"Depth: %d\n", depth);
 
-	EvaluatedMove move = !color ? minimaxWithMemory(state, depth, INT_MIN, INT_MAX, color) : minimax(state, 2, INT_MIN, INT_MAX, color);
+	int depth = 4;
+	EvaluatedMove move = minimaxWithMemory(state, depth, INT_MIN, INT_MAX, color);
+	
+	clock.stop();
+	while (clock.getSeconds() < LIMIT)
+	{
+		wprintf(L"Depth: %d\n", depth);
+		EvaluatedMove deeper = minimaxWithMemory(state, depth + 2, INT_MIN, INT_MAX, color);
+
+		clock.stop();
+		if (clock.getSeconds() >= LIMIT)
+			break;
+
+		move = deeper;
+		depth += 2;
+	}
+
 	wprintf(L"Transposition table has been used %d times this turn.\n", table_uses);
 	return move;
 }

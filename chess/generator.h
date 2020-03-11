@@ -6,9 +6,9 @@
 
 bool outsideBoard(struct Vector vector);
 
-std::vector<struct Vector> getKnightMoves(struct State* state, struct Vector from);
-std::vector<struct Vector> getBishopMoves(struct State* state, struct Vector from, int range = BOARD_SIZE);
-std::vector<struct Vector> getRookMoves(struct State* state, struct Vector from, int range = BOARD_SIZE);
+void getKnightMoves(std::vector<struct Vector> &moves, struct State* state, struct Vector from);
+void getBishopMoves(std::vector<struct Vector> &moves, struct State* state, struct Vector from, int range = BOARD_SIZE);
+void getRookMoves(std::vector<struct Vector> &moves, struct State* state, struct Vector from, int range = BOARD_SIZE);
 
-std::vector<struct Vector> getMoves(struct State* state, struct Vector from);
+void getMoves(std::vector<struct Vector> &moves, struct State* state, struct Vector from);
 std::vector<struct Move> getMoves(struct State* state, bool color);

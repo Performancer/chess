@@ -14,10 +14,21 @@ bool outsideBoard(struct Vector vector)
 	return vector.x < 0 || vector.y < 0 || vector.x >= BOARD_SIZE || vector.y >= BOARD_SIZE;
 }
 
-std::vector<struct Vector> getKnightMoves(struct State* state, struct Vector from)
+void validate(struct State* state, struct Vector from, std::vector<struct Vector>* moves)
 {
-	std::vector<struct Vector> moves;
+	int i = 0;
+	while (i < moves->size())
+	{
+		State temp = state->simulate({ from, moves->at(i) });
+		if (temp.isCheck(getColor(state->tiles[from.x][from.y])))
+			moves->erase(moves->begin() + i);
+		else
+			i++;
+	}
+}
 
+void getKnightMoves(std::vector<struct Vector> &moves, struct State* state, struct Vector from)
+{
 	for (int i = 0; i < 8; i++)
 	{
 		int x = ((i / 2) % 2 == 0) ? 2 : -2;
@@ -35,14 +46,10 @@ std::vector<struct Vector> getKnightMoves(struct State* state, struct Vector fro
 		if (tile == EMPTY || !isAlly(state->tiles[from.x][from.y], tile))
 			moves.push_back(to);
 	}
-
-	return moves;
 }
 
-std::vector<struct Vector> getBishopMoves(struct State* state, struct Vector from, int range)
+void getBishopMoves(std::vector<struct Vector> &moves, struct State* state, struct Vector from, int range)
 {
-	std::vector<struct Vector> moves;
-
 	for (int direction = 0; direction < 4; direction++)
 		for (int distance = 1; distance < range + 1; distance++)
 		{
@@ -65,14 +72,10 @@ std::vector<struct Vector> getBishopMoves(struct State* state, struct Vector fro
 				break;
 			}
 		}
-
-	return moves;
 }
 
-std::vector<struct Vector> getRookMoves(struct State* state, struct Vector from, int range)
+void getRookMoves(std::vector<struct Vector> &moves, struct State* state, struct Vector from, int range)
 {
-	std::vector<struct Vector> moves;
-
 	for (int direction = 0; direction < 4; direction++)
 		for (int distance = 1; distance < range + 1; distance++)
 		{
@@ -99,24 +102,17 @@ std::vector<struct Vector> getRookMoves(struct State* state, struct Vector from,
 				break;
 			}
 		}
-
-	return moves;
 }
 
-std::vector<struct Vector> getQueenMoves(struct State* state, struct Vector from, int range = BOARD_SIZE)
+void getQueenMoves(std::vector<struct Vector> &moves, struct State* state, struct Vector from, int range = BOARD_SIZE)
 {
-	std::vector<struct Vector> moves;
-	for (struct Vector vector : getBishopMoves(state, from, range))
-		moves.push_back(vector);
-	for (struct Vector vector : getRookMoves(state, from, range))
-		moves.push_back(vector);
-
-	return moves;
+	getBishopMoves(moves, state, from, range);
+	getRookMoves(moves, state, from, range);
 }
 
-std::vector<struct Vector> getKingMoves(struct State* state, struct Vector from)
+void getKingMoves(std::vector<struct Vector> &moves, struct State* state, struct Vector from)
 {
-	std::vector<struct Vector> moves = getQueenMoves(state, from, 1);
+	getQueenMoves(moves, state, from, 1);
 
 	//	1. The king and the chosen rook are on the player's first rank.
 	//	2. Neither the king nor the chosen rook has previously moved.
@@ -141,22 +137,15 @@ std::vector<struct Vector> getKingMoves(struct State* state, struct Vector from)
 				moves.push_back({ 2, from.y });
 		}
 	}
-
-	return moves;
 }
 
 bool pawnHasMoved(int y, bool is_black)
 {
-	if (is_black)
-		return y != 6;
-
-	return y != 1;
+	return y != (is_black ? 6 : 1);
 }
 
-std::vector<struct Vector> getPawnMoves(struct State* state, struct Vector from)
+void getPawnMoves(std::vector<struct Vector> &moves, struct State* state, struct Vector from)
 {
-	std::vector<struct Vector> moves;
-
 	char piece = state->tiles[from.x][from.y];
 	bool is_black = getColor(piece);	
 	int y = from.y + (is_black ? -1 : 1);
@@ -185,37 +174,21 @@ std::vector<struct Vector> getPawnMoves(struct State* state, struct Vector from)
 				moves.push_back({ x, y }); //eat
 		}
 	}
-
-	return moves;
 }
 
-std::vector<struct Vector> getMoves(struct State* state, struct Vector from)
+void getMoves(std::vector<struct Vector> &moves, struct State* state, struct Vector from)
 {
-	std::vector<struct Vector> moves;
-
-	char square = state->tiles[from.x][from.y];
-
-	switch (getType(square))
+	switch (getType(state->tiles[from.x][from.y]))
 	{
-		case KING:		moves = getKingMoves(state, from);		break;
-		case QUEEN:		moves = getQueenMoves(state, from);		break;
-		case ROOK:		moves = getRookMoves(state, from);		break;
-		case BISHOP:	moves = getBishopMoves(state, from);	break;
-		case KNIGHT:	moves = getKnightMoves(state, from);	break;
-		case PAWN:		moves = getPawnMoves(state, from);		break;
+		case KING:		getKingMoves(moves, state, from);		break;
+		case QUEEN:		getQueenMoves(moves, state, from);		break;
+		case ROOK:		getRookMoves(moves, state, from);		break;
+		case BISHOP:	getBishopMoves(moves, state, from);		break;
+		case KNIGHT:	getKnightMoves(moves, state, from);		break;
+		case PAWN:		getPawnMoves(moves, state, from);		break;
 	}
 
-	std::vector<struct Vector> validated;
-
-	for (struct Vector to : moves)
-	{
-		State temp = state->simulate({ from, to });
-
-		if (!temp.isCheck(getColor(square)))
-			validated.push_back(to);
-	}
-
-	return validated;
+	return validate(state, from, &moves);
 }
 
 std::vector<struct Move> getMoves(struct State* state, bool color)
@@ -225,8 +198,13 @@ std::vector<struct Move> getMoves(struct State* state, bool color)
 	for (int x = 0; x < BOARD_SIZE; x++)
 		for (int y = 0; y < BOARD_SIZE; y++)
 			if (getColor(state->tiles[x][y]) == color) //AI can only move the color assigned
-				for (struct Vector vector : getMoves(state, { x, y }))
+			{
+				std::vector<struct Vector> temp;
+				getMoves(temp, state, { x, y });
+
+				for (struct Vector vector : temp)
 					moves.push_back({ x, y, vector.x, vector.y });
+			}
 
 	return moves;
 }

@@ -151,14 +151,17 @@ void executeMove(struct State* state, Move move, bool inform = false)
 
 bool isLegalMove(struct State* state, Move move)
 {
-	for (struct Vector vector : getMoves(state, move.from))
+	std::vector<struct Vector> moves;
+	getMoves(moves, state, move.from);
+
+	for (struct Vector vector : moves)
 		if (vector == move.to)
 			return true;
 
 	std::wcout << "It is not a legal move." << std::endl;
 	std::wcout << "Legal moves from (" << move.from.x << "," << move.from.y << ") are:" << std::endl;
 	
-	for (struct Vector vector : getMoves(state, move.from))
+	for (struct Vector vector : moves)
 		std::wcout << "   to: " << vector.x << ","<< vector.y << std::endl;
 
 	return false;
