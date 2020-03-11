@@ -8,9 +8,12 @@ struct Transposition
 	int lower;
 };
 
-void initialize_zobrist();
-int hash(struct State* state);
+namespace transposition
+{
+	void initialize_zobrist();
+	int hash(struct State* state);
 
-bool transpositionExists(int key);
-Transposition getTransposition(int key);
-void addTransposition(int key, Transposition value);
+	bool exists(int key);
+	Transposition get(int key);
+	void add(int key, Transposition value);
+}

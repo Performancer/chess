@@ -17,19 +17,20 @@ void printPossibleMoves(struct State* state, struct Vector from)
 
 int main()
 {
-	initialize_zobrist();
-
 	State state;
 	state.initialize();
 
 	int turn = 0;
+	Clock chess_clock;
 	Move last_move = { -1, -1, -1, -1 };
 	bool player_color = true;
-	int seconds, militm;
+
+	Clock metrics;
+	metrics.start();
 
 	while(true)
 	{
-		startClock();
+		chess_clock.start();
 		draw(&state, last_move);
 
 		bool color = turn % 2 != 0; //white = 0, black = 1
@@ -59,11 +60,12 @@ int main()
 			turn++;
 		}
 
-		stopClock(&seconds, &militm);
-		wprintf(L"Last frame took %ld.%03d seconds.\n", seconds, militm);
+		chess_clock.stop();
+		wprintf(L"Last frame took %ld.%03d seconds.\n", chess_clock.getSeconds(), chess_clock.getMilliseconds());
 		wprintf(L"There are %d pieces left.\n", state.whites + state.blacks);
 	}
 
-	wprintf(L"The game has ended.\n");
+	metrics.stop();
+	wprintf(L"The game has ended. Process took %ld.%03d seconds in total.\n", metrics.getSeconds(), metrics.getMilliseconds());
 	system("pause");
 }

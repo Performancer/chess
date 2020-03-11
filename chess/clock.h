@@ -1,23 +1,32 @@
 #pragma once
 #include <sys\timeb.h> 
 
-struct timeb start, end;
-
-void startClock()
+struct Clock
 {
-	ftime(&start);
-}
+private:
+	struct timeb _start, _end;
+	int _seconds, _militm;
 
-void stopClock(int* seconds, int* militm)
-{
-	ftime(&end);
-
-	*seconds = end.time - start.time;
-	*militm = end.millitm - start.millitm;
-
-	if (*militm < 0)
+public:
+	void start()
 	{
-		*militm += 1000;
-		*seconds--;
+		ftime(&_start);
 	}
-}
+
+	void stop()
+	{
+		ftime(&_end);
+
+		_seconds = _end.time - _start.time;
+		_militm = _end.millitm - _start.millitm;
+
+		if (_militm < 0)
+		{
+			_militm += 1000;
+			_seconds--;
+		}
+	}
+
+	int getSeconds() { return _seconds; }
+	int getMilliseconds() { return _militm; }
+};

@@ -49,11 +49,11 @@ EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool 
 
 EvaluatedMove minimaxWithMemory(struct State* state, int depth, int alpha, int beta, bool color)
 {
-	int hash_key = hash(state);
+	int hash_key = transposition::hash(state);
 	
-	if (transpositionExists(hash_key))
+	if (transposition::exists(hash_key))
 	{
-		Transposition value = getTransposition(hash_key);
+		Transposition value = transposition::get(hash_key);
 		
 		if (value.depth >= depth)
 		{
@@ -69,7 +69,7 @@ EvaluatedMove minimaxWithMemory(struct State* state, int depth, int alpha, int b
 	if (depth == 0)
 	{
 		int eval = state->evaluate();
-		addTransposition(hash_key, { depth, alpha, beta });
+		transposition::add(hash_key, { depth, alpha, beta });
 		return { eval, -1, -1, -1, -1 };
 	}
 
@@ -102,8 +102,8 @@ EvaluatedMove minimaxWithMemory(struct State* state, int depth, int alpha, int b
 			break;
 	}
 
-	if (!transpositionExists(hash_key))
-		addTransposition(hash_key, { depth, alpha, beta });
+	if (!transposition::exists(hash_key))
+		transposition::add(hash_key, { depth, alpha, beta });
 
 	return best_move;
 }
@@ -111,7 +111,7 @@ EvaluatedMove minimaxWithMemory(struct State* state, int depth, int alpha, int b
 EvaluatedMove getNextMove(struct State* state, bool color)
 {
 	table_uses = 0;
-	int hash_key = hash(state);
+	int hash_key = transposition::hash(state);
 	int depth;
 
 	int pieces = state->blacks + state->whites;
@@ -128,7 +128,7 @@ EvaluatedMove getNextMove(struct State* state, bool color)
 	wprintf(L"Hash: %d\n", hash_key);
 	wprintf(L"Depth: %d\n", depth);
 
-	EvaluatedMove move = !color ? minimaxWithMemory(state, 4, INT_MIN, INT_MAX, color) : minimax(state, 4, INT_MIN, INT_MAX, color);
+	EvaluatedMove move = !color ? minimaxWithMemory(state, depth, INT_MIN, INT_MAX, color) : minimax(state, 2, INT_MIN, INT_MAX, color);
 	wprintf(L"Transposition table has been used %d times this turn.\n", table_uses);
 	return move;
 }

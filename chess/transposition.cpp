@@ -2,47 +2,56 @@
 #include <map>
 #include "transposition.h"
 
-int zobrist_table[64][12];
-
-void initialize_zobrist()
+namespace transposition
 {
-	for (int i = 0; i < 64; i++)
-		for (int j = 0; j < 12; j++)
-			zobrist_table[i][j] = rand();
-}
+	static int zobrist_table[64][12];
+	static bool initialized;
 
-int hash(struct State* state)
-{
-	int h = 0;
+	void initialize_zobrist()
+	{
+		for (int i = 0; i < 64; i++)
+			for (int j = 0; j < 12; j++)
+				zobrist_table[i][j] = rand();
 
-	for (int x = 0; x < BOARD_SIZE; x++)
-		for (int y = 0; y < BOARD_SIZE; y++)
-		{
-			char tile = state->tiles[x][y];
+		initialized = true;
+	}
 
-			if (tile != EMPTY)
+	int hash(struct State* state)
+	{
+		if (!initialized)
+			initialize_zobrist();
+
+		int h = 0;
+
+		for (int x = 0; x < BOARD_SIZE; x++)
+			for (int y = 0; y < BOARD_SIZE; y++)
 			{
-				char value = getType(tile) + (getColor(tile) ? 6 : 0);
-				h ^= zobrist_table[x * 8 + y][value];
+				char tile = state->tiles[x][y];
+
+				if (tile != EMPTY)
+				{
+					char value = getType(tile) + (getColor(tile) ? 6 : 0);
+					h ^= zobrist_table[x * 8 + y][value];
+				}
 			}
-		}
 
-	return h;
-}
+		return h;
+	}
 
-std::map<int, Transposition> table;
+	static std::map<int, Transposition> table;
 
-bool transpositionExists(int key)
-{
-	return table.find(key) != table.end();
-}
+	bool exists(int key)
+	{
+		return table.find(key) != table.end();
+	}
 
-Transposition getTransposition(int key)
-{
-	return table[key];
-}
+	Transposition get(int key)
+	{
+		return table[key];
+	}
 
-void addTransposition(int key, Transposition value)
-{
-	table[key] = value;
+	void add(int key, Transposition value)
+	{
+		table[key] = value;
+	}
 }
