@@ -27,15 +27,18 @@ int main()
 	Move last_move = { -1, -1, -1, -1 };
 	bool player_color = false;
 
-	Clock metrics;
-	metrics.start();
+	Clock total;
+	total.start();
+
+	wprintf(L"GAME IS STARTING: THIS MESSAGE IS USED TO DISMORAL THE OPPONENT\n\n");
 
 	while(true)
 	{
 		chess_clock.start();
 		draw(&state, last_move);
 
-		bool color = turn % 2 != 0; //white = 0, black = 1
+		bool color = turn % 2 != 0;
+		wprintf(L"------- TURN %d - %s -------\n", (turn + 1), (color ? L"BLACK" : L"WHITE"));
 
 		if (color == player_color)
 		{
@@ -55,7 +58,7 @@ int main()
 			if (evad_move.move.from.isEqual(-1, -1))
 				break;
 
-			wprintf(L"Turn: %d Eval: %d\n", (turn + 1), evad_move.eval);
+			wprintf(L"Evaluation: %d\n", evad_move.eval);
 
 			executeMove(&state, evad_move.move, true);
 			last_move = evad_move.move;
@@ -66,6 +69,6 @@ int main()
 		wprintf(L"There are %d pieces left.\n", state.whites + state.blacks);
 	}
 
-	wprintf(L"The game has ended. Process took %ld.%03d seconds in total.\n", metrics.getSeconds(), metrics.getMilliseconds());
+	wprintf(L"The game has ended. Process took %ld.%03d seconds in total.\n", total.getSeconds(), total.getMilliseconds());
 	system("pause");
 }

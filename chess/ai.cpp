@@ -85,7 +85,7 @@ EvaluatedMove getNextMove(struct State* state, bool color)
 	EvaluatedMove move = minimax(state, depth, INT_MIN, INT_MAX, color, true);
 	
 	wprintf(L"Depth: %d\n", depth);
-	wprintf(L"Processing depth 6... ");
+	wprintf(L"Processing depth 6...");
 	EvaluatedMove deeper = minimax(state, depth + 2, INT_MIN, INT_MAX, color, true);
 
 	if (clock.getSeconds() < LIMIT)
