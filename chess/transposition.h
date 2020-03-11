@@ -4,14 +4,15 @@
 struct Transposition
 {
 	int depth;
-	int upper;
-	int lower;
+	EvaluatedMove move;
 };
 
 namespace transposition
 {
+	typedef unsigned long long int UINT64;
+
 	void initialize_zobrist();
-	int hash(struct State* state);
+	UINT64 hash(struct State* state);
 
 	bool exists(int key);
 	Transposition get(int key);

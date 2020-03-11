@@ -1,27 +1,33 @@
 #include <stdlib.h>
 #include <map>
+#include <random>
 #include "transposition.h"
 
 namespace transposition
 {
-	static int zobrist_table[64][12];
+	static UINT64 zobrist_table[64][12];
 	static bool initialized;
 
 	void initialize_zobrist()
 	{
+		std::random_device rd;
+		std::mt19937_64 eng(rd());
+
+		std::uniform_int_distribution<UINT64> distr;
+
 		for (int i = 0; i < 64; i++)
 			for (int j = 0; j < 12; j++)
-				zobrist_table[i][j] = rand();
+				zobrist_table[i][j] = distr(eng);
 
 		initialized = true;
 	}
 
-	int hash(struct State* state)
+	UINT64 hash(struct State* state)
 	{
 		if (!initialized)
 			initialize_zobrist();
 
-		int h = 0;
+		UINT64 h = 0;
 
 		for (int x = 0; x < BOARD_SIZE; x++)
 			for (int y = 0; y < BOARD_SIZE; y++)
