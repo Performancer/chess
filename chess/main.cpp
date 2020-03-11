@@ -25,7 +25,7 @@ int main()
 	int turn = 0;
 	Clock chess_clock;
 	Move last_move = { -1, -1, -1, -1 };
-	bool player_color = true;
+	bool player_color = false;
 
 	Clock metrics;
 	metrics.start();
@@ -37,7 +37,7 @@ int main()
 
 		bool color = turn % 2 != 0; //white = 0, black = 1
 
-		if (false)
+		if (color == player_color)
 		{
 			Move move = getMove(color);
 

@@ -1,7 +1,6 @@
-#include <stdlib.h>
-#include <map>
-#include <random>
 #include "transposition.h"
+#include <random>
+#include <map>
 
 namespace transposition
 {
