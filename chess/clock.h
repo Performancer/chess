@@ -4,29 +4,40 @@
 struct Clock
 {
 private:
-	struct timeb _start, _end;
-	int _seconds, _militm;
-
+	struct timeb _start;
 public:
 	void start()
 	{
 		ftime(&_start);
 	}
 
-	void stop()
-	{
-		ftime(&_end);
+	int getSeconds() 
+	{ 
+		struct timeb end;
+		ftime(&end);
 
-		_seconds = _end.time - _start.time;
-		_militm = _end.millitm - _start.millitm;
+		int seconds = end.time - _start.time;
+		int militm = end.millitm - _start.millitm;
 
-		if (_militm < 0)
+		if (militm < 0)
 		{
-			_militm += 1000;
-			_seconds--;
+			militm += 1000;
+			seconds--;
 		}
+
+		return seconds;
 	}
 
-	int getSeconds() { return _seconds; }
-	int getMilliseconds() { return _militm; }
+	int getMilliseconds()
+	{
+		struct timeb end;
+		ftime(&end);
+
+		int millitm = end.millitm - _start.millitm;
+
+		if (millitm < 0)
+			millitm += 1000;
+
+		return millitm;
+	}
 };

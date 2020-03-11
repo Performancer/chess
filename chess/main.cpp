@@ -62,12 +62,10 @@ int main()
 			turn++;
 		}
 
-		chess_clock.stop();
 		wprintf(L"Last frame took %ld.%03d seconds.\n", chess_clock.getSeconds(), chess_clock.getMilliseconds());
 		wprintf(L"There are %d pieces left.\n", state.whites + state.blacks);
 	}
 
-	metrics.stop();
 	wprintf(L"The game has ended. Process took %ld.%03d seconds in total.\n", metrics.getSeconds(), metrics.getMilliseconds());
 	system("pause");
 }

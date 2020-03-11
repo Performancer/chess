@@ -83,7 +83,6 @@ EvaluatedMove minimaxWithMemory(struct State* state, int depth, int alpha, int b
 
 	for (Move move : moves)
 	{
-		clock.stop();
 		if (clock.getSeconds() >= LIMIT)
 			return { -1, -1, -1, -1, -1 };
 
@@ -130,14 +129,12 @@ EvaluatedMove getNextMove(struct State* state, bool color)
 
 	int depth = 4;
 	EvaluatedMove move = minimaxWithMemory(state, depth, INT_MIN, INT_MAX, color);
-	
-	clock.stop();
+
 	while (clock.getSeconds() < LIMIT)
 	{
 		wprintf(L"Depth: %d\n", depth);
 		EvaluatedMove deeper = minimaxWithMemory(state, depth + 2, INT_MIN, INT_MAX, color);
 
-		clock.stop();
 		if (clock.getSeconds() >= LIMIT)
 			break;
 
