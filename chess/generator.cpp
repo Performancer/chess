@@ -193,18 +193,21 @@ void getMoves(std::vector<struct Vector> &moves, struct State* state, struct Vec
 
 std::vector<struct Move> getMoves(struct State* state, bool color)
 {
-	std::vector<struct Move> moves;
+	std::vector<struct Move> all_moves;
+	std::vector<struct Vector> moves;
 
 	for (int x = 0; x < BOARD_SIZE; x++)
 		for (int y = 0; y < BOARD_SIZE; y++)
-			if (getColor(state->tiles[x][y]) == color) //AI can only move the color assigned
-			{
-				std::vector<struct Vector> temp;
-				getMoves(temp, state, { x, y });
+		{
+			if (state->tiles[x][y] == EMPTY || getColor(state->tiles[x][y]) != color)
+				continue;
 
-				for (struct Vector vector : temp)
-					moves.push_back({ x, y, vector.x, vector.y });
-			}
+			moves.clear();
+			getMoves(moves, state, { x, y });
 
-	return moves;
+			for (auto vector : moves)
+				all_moves.push_back({ x, y, vector.x, vector.y });
+		}
+
+	return all_moves;
 }
