@@ -3,6 +3,7 @@
 
 struct Transposition
 {
+	bool color;
 	int depth;
 	EvaluatedMove move;
 };

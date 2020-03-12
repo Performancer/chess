@@ -21,7 +21,7 @@ EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool 
 	{
 		Transposition value = transposition::get(hash_key);
 		
-		if (value.depth == depth || (value.depth > depth && value.depth % 2 == depth % 2) )
+		if (value.depth >= depth && value.color == color )
 		{
 			table_uses++;
 			return value.move;
@@ -31,7 +31,7 @@ EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool 
 	if (depth == 0)
 	{
 		EvaluatedMove move = { state->evaluate(), -1, -1, -1, -1 };
-		transposition::add(hash_key, { depth, move });
+		transposition::add(hash_key, { color, depth, move });
 		return move;
 	}
 
@@ -68,7 +68,7 @@ EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool 
 	}
 
 	if (!transposition::exists(hash_key))
-		transposition::add(hash_key, { depth, best_move });
+		transposition::add(hash_key, { color, depth, best_move });
 
 	return best_move;
 }
@@ -83,22 +83,27 @@ EvaluatedMove getNextMove(struct State* state, bool color)
 
 	int depth = 4;
 	EvaluatedMove move = minimax(state, depth, INT_MIN, INT_MAX, color, true);
+
+	while (clock.getSeconds() < LIMIT)
+	{
+		wprintf(L"Depth: %d\n", depth);
+
+		int new_depth = depth + 2;
+		wprintf(L"Processing depth %d...", new_depth);
+		EvaluatedMove deeper = minimax(state, new_depth, INT_MIN, INT_MAX, color, true);
+
+		if (clock.getSeconds() < LIMIT)
+		{
+			move = deeper;
+			depth = new_depth;
+			wprintf(L"done.\n");
+		}
+		else
+		{
+			wprintf(L"falling back to depth %d.\n", depth);
+		}
+	}
 	
-	wprintf(L"Depth: %d\n", depth);
-	wprintf(L"Processing depth 6...");
-	EvaluatedMove deeper = minimax(state, depth + 2, INT_MIN, INT_MAX, color, true);
-
-	if (clock.getSeconds() < LIMIT)
-	{
-		move = deeper;
-		depth += 2;
-		wprintf(L"done.\n");
-	}
-	else
-	{
-		wprintf(L"falling back to depth 4.\n");
-	}
-
 	wprintf(L"Transposition table has been used %d times this turn.\n", table_uses);
 	return move;
 }

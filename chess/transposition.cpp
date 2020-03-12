@@ -5,6 +5,8 @@
 namespace transposition
 {
 	static UINT64 zobrist_table[64][12];
+	static UINT64 special_cases[5];
+
 	static bool initialized;
 
 	void initialize_zobrist()
@@ -17,6 +19,9 @@ namespace transposition
 		for (int i = 0; i < 64; i++)
 			for (int j = 0; j < 12; j++)
 				zobrist_table[i][j] = distr(eng);
+
+		for (int i = 0; i < 5; i++)
+			special_cases[i] = distr(eng);
 
 		initialized = true;
 	}
@@ -33,12 +38,23 @@ namespace transposition
 			{
 				char tile = state->tiles[x][y];
 
-				if (tile != EMPTY)
-				{
-					char value = getType(tile) + (getColor(tile) ? 6 : 0);
-					h ^= zobrist_table[x * 8 + y][value];
-				}
+				if(state->en_passant.isEqual(x, y))
+					h ^= special_cases[4];
+				else if (tile != EMPTY)
+					h ^= zobrist_table[x * 8 + y][getType(tile) + (getColor(tile) ? 6 : 0)];
 			}
+
+		if (state->black_can_castle_king_side)
+			h ^= special_cases[0];
+
+		if (state->black_can_castle_queen_side)
+			h ^= special_cases[1];
+
+		if (state->white_can_castle_king_side)
+			h ^= special_cases[2];
+
+		if (state->white_can_castle_queen_side)
+			h ^= special_cases[3];
 
 		return h;
 	}
