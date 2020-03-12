@@ -1,4 +1,8 @@
 #pragma once
 #include "move.h"
 
-Move getMove(bool is_black);
+namespace input
+{
+	bool getColor();
+	Move getMove(bool is_black);
+}

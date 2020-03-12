@@ -25,7 +25,7 @@ int main()
 	int turn = 0;
 	Clock chess_clock;
 	Move last_move = { -1, -1, -1, -1 };
-	bool player_color = false;
+	bool player_color = input::getColor();
 
 	Clock total;
 	total.start();
@@ -42,7 +42,7 @@ int main()
 
 		if (color == player_color)
 		{
-			Move move = getMove(color);
+			Move move = input::getMove(color);
 
 			if (isLegalMove(&state, move))
 			{
