@@ -5,7 +5,7 @@ struct Transposition
 {
 	bool color;
 	int depth;
-	EvaluatedMove move;
+	int eval;
 };
 
 namespace transposition

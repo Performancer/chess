@@ -13,28 +13,69 @@
 static Clock clock;
 static int table_uses = 0;
 
-EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool color, bool use_table = false)
+int minimax(struct State* state, int depth, int alpha, int beta, bool color, bool use_table = false)
 {
 	transposition::UINT64 hash_key = transposition::hash(state);
-	
+
 	if (use_table && transposition::exists(hash_key))
 	{
 		Transposition value = transposition::get(hash_key);
-		
-		if (value.depth >= depth && value.color == color )
+
+		if (value.depth >= depth && value.color == color)
 		{
 			table_uses++;
-			return value.move;
+			return value.eval;
 		}
 	}
 
 	if (depth == 0)
 	{
-		EvaluatedMove move = { state->evaluate(), -1, -1, -1, -1 };
-		transposition::add(hash_key, { color, depth, move });
-		return move;
+		int eval = state->evaluate();
+		transposition::add(hash_key, { color, depth, eval });
+		return eval;
 	}
 
+	std::vector<struct Move> moves = getMoves(state, color);
+
+	int best_eval = color ? INT_MAX : INT_MIN;
+
+	for (Move move : moves)
+	{
+		if (clock.getSeconds() >= LIMIT)
+			return best_eval;
+
+		struct State temp = state->simulate(move);
+
+		int eval = minimax(&temp, depth - 1, alpha, beta, !color, use_table);
+
+		if (color)
+		{
+			if (eval < best_eval)
+				best_eval = eval;
+
+			beta = std::min(beta, eval);
+		}
+		else
+		{
+			if (eval > best_eval)
+				best_eval = eval;
+
+			alpha = std::max(alpha, eval);
+		}
+
+		if (beta <= alpha)
+			break;
+	}
+
+	if (!transposition::exists(hash_key))
+		transposition::add(hash_key, { color, depth, best_eval });
+
+	return best_eval;
+}
+
+
+EvaluatedMove minimaxWithMove(struct State* state, int depth, int alpha, int beta, bool color, bool use_table = false)
+{
 	std::vector<struct Move> moves = getMoves(state, color);
 
 	EvaluatedMove best_move = { color ? INT_MAX : INT_MIN, -1, -1, -1, -1 };
@@ -46,29 +87,26 @@ EvaluatedMove minimax(struct State* state, int depth, int alpha, int beta, bool 
 
 		struct State temp = state->simulate(move);
 
-		EvaluatedMove evad_move = minimax(&temp, depth - 1, alpha, beta, !color, use_table);
+		int eval = minimax(&temp, depth - 1, alpha, beta, !color, use_table);
 
 		if (color)
 		{
-			if (evad_move.eval < best_move.eval)
-				best_move = { evad_move.eval, move};
+			if (eval < best_move.eval)
+				best_move = { eval, move };
 
-			beta = std::min(beta, evad_move.eval);
+			beta = std::min(beta, eval);
 		}
 		else
 		{
-			if(evad_move.eval > best_move.eval)
-				best_move = { evad_move.eval, move};
+			if(eval > best_move.eval)
+				best_move = { eval, move };
 
-			alpha = std::max(alpha, evad_move.eval);
+			alpha = std::max(alpha, eval);
 		}
 
 		if (beta <= alpha)
 			break;
 	}
-
-	if (!transposition::exists(hash_key))
-		transposition::add(hash_key, { color, depth, best_move });
 
 	return best_move;
 }
@@ -82,15 +120,15 @@ EvaluatedMove getNextMove(struct State* state, bool color)
 	wprintf(L"Hash: %llu\n", hash_key);
 
 	int depth = 4;
-	EvaluatedMove move = minimax(state, depth, INT_MIN, INT_MAX, color, true);
-
+	EvaluatedMove move = minimaxWithMove(state, depth, INT_MIN, INT_MAX, color, true);
+	
 	while (clock.getSeconds() < LIMIT)
 	{
 		wprintf(L"Depth: %d\n", depth);
 
 		int new_depth = depth + 2;
 		wprintf(L"Processing depth %d...", new_depth);
-		EvaluatedMove deeper = minimax(state, new_depth, INT_MIN, INT_MAX, color, true);
+		EvaluatedMove deeper = minimaxWithMove(state, new_depth, INT_MIN, INT_MAX, color, true);
 
 		if (clock.getSeconds() < LIMIT)
 		{
